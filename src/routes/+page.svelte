@@ -36,9 +36,14 @@
     </a>
 
     <div class="flex-grow"></div>
-    <Button on:click={toggleMode} variant={"ghost"} size="icon" class="text-muted-foreground hover:text-foreground transition-none">
+    <Button
+      on:click={toggleMode}
+      variant={"ghost"}
+      size="icon"
+      class="text-muted-foreground hover:text-foreground transition-none"
+    >
       <Sun
-        class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 " 
+        class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 "
       />
       <Moon
         class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
@@ -92,5 +97,29 @@
       </Sheet.Content>
     </Sheet.Root>
   </header>
-  <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8"></main>
+
+  <!-- 4 rem is the size of the header -->
+  <section
+    class="container flex flex-col py-4 justify-center items-center space-y-6"
+    style="height: calc(100vh - 4rem);"
+  >
+    <h1 class="text-4xl md:text-7xl font-bold text-center">
+      Colegiul Naţional „A. T.
+      <span
+        class="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text"
+        >Laurian</span
+      >” Botoşani
+    </h1>
+
+    <p class="text-xl text-muted-foreground text-center md:w-1/2">
+      Avem o varietate de cluburi și activități care îți vor dezvolta
+      abilitățile, îți vor hrăni pasiunea și te vor motiva să continui
+    </p>
+
+    <Button
+      variant={"ghost"}
+      class="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 w-full md:w-1/3 h-14 text-2xl"
+      >Descoperă</Button
+    >
+  </section>
 </div>
