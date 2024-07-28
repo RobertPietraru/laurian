@@ -147,7 +147,7 @@
                 </h2>
                 <ul class="text-gray-500 dark:text-gray-400 font-medium">
                     <li class="mb-4">
-                        <a href="#" class="hover:underline">Licență</a>
+                        <a href="https://github.com/RobertPietraru/laurian/blob/master/LICENSE" class="hover:underline">Licență</a>
                     </li>
                 </ul>
             </div>
