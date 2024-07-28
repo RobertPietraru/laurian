@@ -14,7 +14,7 @@
   style="height: calc(100vh - 4rem);"
 >
   <div class="text-center lg:text-start space-y-6">
-    <main class="text-5xl md:text-6xl font-bold">
+    <main class="text-5xl md:text-6xl font-bold text-left">
       <h1 class="font-bold">
         Colegiul Naţional „A. T.
         <span
@@ -23,7 +23,7 @@
         >” Botoşani
       </h1>
     </main>
-    <p class="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0">
+    <p class="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-left">
       Avem o varietate de cluburi și activități care îți vor dezvolta
       abilitățile, îți vor hrăni pasiunea și te vor motiva să continui
     </p>
@@ -54,5 +54,11 @@
       >
     </div>
   </div>
-  <img src={laurian} alt="A.T. Laurian" class="" />
+
+  <img
+    src={laurian}
+    alt="Colegiul Naţional „A. T. Laurian” Botoşani"
+    class="absolute bottom-0 right-0 object-cover -z-10 opacity-10 md:opacity-50"
+    style="height: calc(100vh - 4rem);"
+  />
 </section>

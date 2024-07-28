@@ -133,7 +133,7 @@
                 </h2>
                 <ul class="text-gray-500 dark:text-gray-400 font-medium">
                     <li class="mb-4">
-                        <p class="hover:underline">
+                        <p class="hover:underline overflow-clip">
                             robert.c.pietraru@gmail.com
                         </p>
                     </li>
