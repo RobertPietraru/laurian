@@ -2,57 +2,26 @@
     import * as Avatar from "$lib/components/ui/avatar";
     import * as Card from "$lib/components/ui/card";
     import User from "lucide-svelte/icons/user-round";
-    var clubs = [
-        {
-            title: "Ghilotina",
-            description: "Cel mai smek club",
-            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80",
-            members: 20,
-            url: "##",
-        },
-        {
-            title: "Drama",
-            description: "Ceva cu teatru, dar mai bun",
-            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80",
-            members: 20,
-            url: "##",
-        },
-        {
-            title: "Drama",
-            description: "Ceva cu teatru, dar mai bun",
-            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80",
-            members: 20,
-            url: "##",
-        },
-        {
-            title: "Katharsis",
-            description: "Ceva cu teatru",
-            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80",
-            members: 10,
-            url: "##",
-        },
-        {
-            title: "Katharsis",
-            description: "Ceva cu teatru",
-            image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80",
-            members: 10,
-            url: "##",
-        },
-    ];
+    import type { PageData } from './$types';
+
+    export let data: PageData;
+
+    const { clubs, pageTitle } = data;
 </script>
 
 <section class="p-8">
     <h2 class="text-3xl md:text-4xl font-bold">
-        Descoperă toate cluburile din <span
+        <span
             class="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text"
-            >liceul nostru
+        >
+            {pageTitle}
         </span>
     </h2>
 
     <div
         class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
     >
-        {#each clubs as club (club)}
+        {#each clubs as club (club.title)}
             <Card.Root
                 class="relative flex  flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md"
             >
@@ -61,7 +30,7 @@
                 >
                     <img
                         src={club.image}
-                        alt="ui/ux review check"
+                        alt="{club.title}"
                         class="rounded-t-xl"
                     />
                 </div>
@@ -82,7 +51,7 @@
                         <span> {club.members}</span>
                         <User class="h-4 w-4" />
                     </div>
-                    <a class="text-blue-400 font-medium" href="##">
+                    <a class="text-blue-400 font-medium" href={club.url}>
                         Află mai multe
                     </a>
                 </div>

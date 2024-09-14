@@ -58,7 +58,7 @@
   <img
     src={laurian}
     alt="Colegiul Naţional „A. T. Laurian” Botoşani"
-    class="absolute bottom-0 right-0 object-cover -z-10 opacity-10 md:opacity-50"
+    class="absolute bottom-0 right-0 object-cover -z-10 opacity-20 dark:opacity-10  dark:md:opacity-50"
     style="height: calc(100vh - 4rem);"
   />
 </section>

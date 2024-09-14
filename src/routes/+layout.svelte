@@ -44,13 +44,13 @@
         class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
     >
         <a
-            href="##"
+            href="/discover"
             class="text-muted-foreground hover:text-foreground transition-colors"
         >
             Cluburi
         </a>
         <a
-            href="##"
+            href="/about"
             class="text-muted-foreground hover:text-foreground transition-colors"
         >
             Despre
@@ -75,22 +75,22 @@
                     class="flex items-center gap-2 text-lg font-semibold"
                 >
                     <img src={logo} alt="Acme Inc" class="h-6 w-6" />
-                    <span class="sr-only">Acme Inc</span>
+                    <span class="sr-only">Acasa</span>
                 </a>
                 <a
-                    href="##"
+                    href="/"
                     class="text-muted-foreground hover:text-foreground"
                 >
                     Acasa
                 </a>
                 <a
-                    href="##"
+                    href="/discover"
                     class="text-muted-foreground hover:text-foreground"
                 >
                     Cluburi
                 </a>
                 <a
-                    href="##"
+                    href="/about"
                     class="text-muted-foreground hover:text-foreground"
                 >
                     Despre
