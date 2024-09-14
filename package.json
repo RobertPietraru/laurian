@@ -27,6 +27,7 @@
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.417.0",
 		"mode-watcher": "^0.4.1",
+		"svelte-markdown": "^0.4.1",
 		"tailwind-merge": "^2.4.0",
 		"tailwind-variants": "^0.2.1"
 	}
