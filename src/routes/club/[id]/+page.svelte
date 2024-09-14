@@ -1,30 +1,25 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
-    import  SvelteMarkdown   from 'svelte-markdown';
+    import SvelteMarkdown from 'svelte-markdown';
+    import type { PageData } from './$types';
 
-    export let data;
+    export let data: PageData;
 
-    const { club, gallery } = data;
+    const { club } = data;
 </script>
 
 <main class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center mb-12">{club.title}</h1>
+    <h1 class="text-4xl font-bold mb-12">{club.name}</h1>
 
     <section class="mb-16">
-        <Card.Root>
-            <Card.Header class="mb-0 h-0 p-0">
-            </Card.Header>
-            <Card.Content class="markdown-content mt-0">
-                <SvelteMarkdown source={club.description} />
-            </Card.Content>
-        </Card.Root>
+            <SvelteMarkdown source={club.description} />
     </section>
 
     <section>
         <h2 class="text-3xl font-semibold mb-6">Galerie</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {#each gallery as image, index}
+            {#each club.files as image, index}
                 <div
                     class="relative overflow-hidden rounded-xl group"
                     class:col-span-2={index % 3 === 0}

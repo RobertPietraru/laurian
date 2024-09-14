@@ -23,7 +23,6 @@ export const actions: Actions = {
         const name = data.get('name')?.toString();
         const description = data.get('description')?.toString();
         const memberCount = parseInt(data.get('memberCount')?.toString() || '0');
-        const files = []
 
         const userId = locals.pb.authStore.model?.id;
 
