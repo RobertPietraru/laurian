@@ -9,51 +9,43 @@
     const { clubs, pageTitle } = data;
 </script>
 
-<section class="p-8">
-    <h2 class="text-3xl md:text-4xl font-bold">
-        <span
-            class="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text"
-        >
+<section class="p-8 bg-gradient-to-br  min-h-screen">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-12">
+        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-transparent bg-clip-text">
             {pageTitle}
         </span>
     </h2>
 
-    <div
-        class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
-    >
+    <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {#each clubs as club (club.title)}
-            <Card.Root
-                class="relative flex  flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md"
-            >
-                <div
-                    class="relative m-0 overflow-hidden rounded-none bg-transparent bg-clip-border text-gray-700 shadow-none"
-                >
+            <Card.Root class="group hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                <div class="relative overflow-hidden">
                     <img
                         src={club.image}
                         alt="{club.title}"
-                        class="rounded-t-xl"
+                        class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                     />
+                    <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
                 </div>
                 <div class="p-6">
-                    <h4
-                        class="block font-sans text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased"
-                    >
+                    <h4 class="text-2xl font-semibold text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
                         {club.title}
                     </h4>
-                    <p
-                        class="mt-3 block font-sans md:text-xl font-normal leading-relaxed text-gray-700 antialiased"
-                    >
+                    <p class="text-gray-600 mb-4">
                         {club.description}
                     </p>
-                </div>
-                <div class="flex items-center justify-between p-6">
-                    <div class="flex flow-row space-x-0.5 items-center">
-                        <span> {club.members}</span>
-                        <User class="h-4 w-4" />
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-gray-500">
+                            <User class="h-5 w-5" />
+                            <span>{club.members} membri</span>
+                        </div>
+                        <a 
+                            href={club.url}
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors duration-300"
+                        >
+                            Află mai multe
+                        </a>
                     </div>
-                    <a class="text-blue-400 font-medium" href={club.url}>
-                        Află mai multe
-                    </a>
                 </div>
             </Card.Root>
         {/each}
