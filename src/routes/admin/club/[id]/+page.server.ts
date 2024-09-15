@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         };
     } catch (err) {
         console.error('Error loading club:', err);
-        throw redirect(303, '/admin/clubs');
+        throw redirect(303, '/admin/dashboard');
     }
 };
 

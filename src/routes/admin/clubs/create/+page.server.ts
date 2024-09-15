@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from '../../club/create/$types';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
     default: async ({ locals, request, cookies }) => {
