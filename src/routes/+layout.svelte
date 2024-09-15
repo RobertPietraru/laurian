@@ -11,6 +11,10 @@
     import logo from "$lib/assets/logo.png";
     import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+    import { CircleUser } from "lucide-svelte";
+    import * as Popover from "$lib/components/ui/popover/index.js";
+    import LayoutDashboard from "lucide-svelte/icons/layout-dashboard";
+    import LogOut from "lucide-svelte/icons/log-out";
 
 	export let data;
 	$: ({ session, supabase } = data);
@@ -24,6 +28,12 @@
 
 		return () => data.subscription.unsubscribe();
 	});
+    function logout() {
+        supabase.auth.signOut();
+        invalidate('supabase:auth');
+        // refresh the page
+        location.reload();
+    }
 </script>
 
 <ModeWatcher />
@@ -69,6 +79,38 @@
         >
             Despre
         </a>
+        {#if data.session}
+            <Popover.Root>
+                <Popover.Trigger asChild let:builder>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        class="text-muted-foreground hover:text-foreground transition-colors"
+                        builders={[builder]}
+                    >
+                        <CircleUser class="h-4 w-4" />
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Content class="w-48">
+                    <div class="flex flex-col gap-2">
+                        <a
+                            href="/admin/dashboard"
+                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                        >
+                            <LayoutDashboard class="h-4 w-4" />
+                            <span>Dashboard</span>
+                        </a>
+                        <button
+                            on:click={logout}
+                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                        >
+                            <LogOut class="h-4 w-4" />
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </Popover.Content>
+            </Popover.Root>
+        {/if}
     </nav>
     <Sheet.Root>
         <Sheet.Trigger asChild let:builder>
@@ -109,6 +151,21 @@
                 >
                     Despre
                 </a>
+                {#if data.session}
+                    <a
+                        href="/admin/dashboard"
+                        class="text-muted-foreground hover:text-foreground"
+                    >
+                        Dashboard
+                    </a>
+                    <Button
+                        on:click={logout}
+                        variant="ghost"
+                        class="text-muted-foreground hover:text-foreground "
+                    >
+                        Logout
+                    </Button>
+                {/if}
             </nav>
         </Sheet.Content>
     </Sheet.Root>
