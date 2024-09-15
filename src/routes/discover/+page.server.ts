@@ -13,7 +13,7 @@ export const load = (async ({ locals }) => {
         if (error) throw error;
 
         return {
-            clubs: clubs.map(club => clubFromJson(club, env.SUPABASE_URL))
+            clubs: clubs.map(club => clubFromJson(club, env.KV_SUPABASE_URL))
         };
     } catch (error) {
         console.error('Error fetching clubs:', error);

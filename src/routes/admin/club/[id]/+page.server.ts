@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
         if (supabaseError) throw error(404, 'Club not found');
         return {
-            club: clubFromJson(club, env.SUPABASE_URL)
+            club: clubFromJson(club, env.KV_SUPABASE_URL)
         };
     } catch (err) {
         console.error('Error loading club:', err);

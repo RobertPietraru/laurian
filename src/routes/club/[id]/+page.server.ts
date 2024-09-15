@@ -20,6 +20,6 @@ export const load = (async ({ params, locals }) => {
     }
 
     return {
-        club: clubFromJson(club, env.SUPABASE_URL)
+        club: clubFromJson(club, env.KV_SUPABASE_URL)
     };
 }) satisfies PageServerLoad;
