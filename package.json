@@ -23,11 +23,15 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bits-ui": "^0.21.12",
+		"@supabase/ssr": "^0.5.1",
+		"@supabase/supabase-js": "^2.45.4",
+		"bits-ui": "^0.21.13",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.417.0",
 		"mode-watcher": "^0.4.1",
-		"tailwind-merge": "^2.4.0",
+		"pocketbase": "^0.21.5",
+		"svelte-markdown": "^0.4.1",
+		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1"
 	}
 }
