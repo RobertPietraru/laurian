@@ -1,15 +1,19 @@
 import { env } from '$env/dynamic/private';
-import { clubFromRecord } from '$lib/models/club';
+import { clubFromJson } from '$lib/models/club';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
     try {
-        const clubs = await locals.pb.collection('clubs').getList(1, 50, {
-            sort: '-created',
-        });
+        const { data: clubs, error } = await locals.supabase
+            .from('clubs')
+            .select('*')
+            .order('created', { ascending: false })
+            .limit(50);
+
+        if (error) throw error;
 
         return {
-            clubs: clubs.items.map(club => clubFromRecord(club, env.PB_URL))
+            clubs: clubs.map(club => clubFromJson(club, env.SUPABASE_URL))
         };
     } catch (error) {
         console.error('Error fetching clubs:', error);

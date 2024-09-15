@@ -1,21 +1,25 @@
 import { error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { clubFromRecord } from '$lib/models/club';
+import { clubFromJson } from '$lib/models/club';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, locals }) => {
-    try {
-        const club = await locals.pb.collection('clubs').getOne(params.id);
-        
-        if (!club) {
-            throw error(404, 'Club not found');
-        }
+    const { data: club, error: supabaseError } = await locals.supabase
+        .from('clubs')
+        .select('*')
+        .eq('id', params.id)
+        .single();
 
-        return {
-            club: clubFromRecord(club, env.PB_URL)
-        };
-    } catch (err) {
-        console.error('Error fetching club:', err);
+    if (supabaseError) {
+        console.error('Error fetching club:', supabaseError);
         throw error(404, 'Club not found');
     }
+
+    if (!club) {
+        throw error(404, 'Club not found');
+    }
+
+    return {
+        club: clubFromJson(club, env.SUPABASE_URL)
+    };
 }) satisfies PageServerLoad;

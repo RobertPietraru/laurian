@@ -1,5 +1,3 @@
-import type { RecordModel } from "pocketbase";
-
 export interface Club {
     id: string;
     created: Date;
@@ -7,19 +5,17 @@ export interface Club {
     description: string;
     files: string[];
     memberCount: number;
-    creator: string;
 }
 
-export function clubFromRecord(item: RecordModel, pb_url: string): Club {
+export function clubFromJson(item: any, supabaseUrl: string): Club {
     return {
         id: item.id,
         created: new Date(item.created),
         name: item.name,
         description: item.description,
         memberCount: item.memberCount,
-        creator: item.creator,
-        files: ((item.files) || []).map((file: any) => {
-            return `${pb_url}/api/files/clubs/${item.id}/${file}`;
-        }),
+        files: item.files ? item.files.map((file: string) => 
+            `${supabaseUrl}/storage/v1/object/public/laurianbucket/${item.id}/${file}`
+        ) : [],
     };
 }

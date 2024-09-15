@@ -1,9 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { ClientResponseError, RecordModel } from 'pocketbase';
-import type { PageServerLoad } from './$types';
+import type { Actions } from './$types';
 
-export const actions = {
-    default: async ({ locals, request }) => {
+export const actions: Actions = {
+    default: async ({ locals, request, cookies }) => {
         console.log('starting submission')
         console.log('parsing form data')
         const data = await request.formData();
@@ -19,33 +18,53 @@ export const actions = {
         }
 
         console.log('parsed form data')
-        const userId = locals.pb.authStore.model?.id;
 
-        if (!userId) {
-            throw redirect(300, '/login');
+        const { data: { user } } = await locals.supabase.auth.getUser();
+
+        if (!user) {
+            throw redirect(303, 'admin/login');
         }
         console.log('retrieved user info')
 
-        let clubRecord: RecordModel;
+        var clubRecordId: string
         try {
             console.log('creating record')
-            clubRecord = await locals.pb.collection('clubs').create(
-                {
-                    'files': files,
-                    'description': description,
-                    'name': name,
-                    'memberCount': memberCount,
-                    'creator': userId,
-                }
-            );
+            const { data: clubRecord, error } = await locals.supabase
+                .from('clubs')
+                .insert({
+                    id: crypto.randomUUID(),
+                    description,
+                    name,
+                    memberCount,
+                    files: files.map(file => file.name)  // Store file names in the database
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+            clubRecordId = clubRecord.id
 
             console.log('Created club record');
-        
+
+            // Upload files to storage
+            for (const file of files) {
+                const { error: uploadError } = await locals.supabase.storage
+                    .from('laurianbucket')
+                    .upload(`${clubRecordId}/${file.name}`, file);
+
+                if (uploadError) {
+                    console.error('Error uploading file:', uploadError);
+                    // You might want to handle this error, perhaps by deleting the club record
+                    // and returning a failure response
+                }
+            }
+
+            console.log('Uploaded files');
+
         } catch (error) {
             console.log('error', error);
-            return fail(500);
+            return fail(500, { message: 'Failed to create club' });
         }
-
-        throw redirect(300, `/admin/club/${clubRecord.id}`);
+        throw redirect(303, `/admin/club/${clubRecordId}`);
     }
 }

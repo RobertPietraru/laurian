@@ -1,18 +1,22 @@
-import { fail, redirect } from '@sveltejs/kit';
-import type { ClientResponseError, RecordModel } from 'pocketbase';
+import { fail, redirect, error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
-import { clubFromRecord } from '$lib/models/club';
+import { clubFromJson } from '$lib/models/club';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
     try {
-        const club = await locals.pb.collection('clubs').getOne(params.id);
-        console.log(club)
+        const { data: club, error: supabaseError } = await locals.supabase
+            .from('clubs')
+            .select('*')
+            .eq('id', params.id)
+            .single();
+
+        if (supabaseError) throw error(404, 'Club not found');
         return {
-            club: clubFromRecord(club,  env.PB_URL)
+            club: clubFromJson(club, env.SUPABASE_URL)
         };
-    } catch (error) {
-        console.error('Error loading club:', error);
+    } catch (err) {
+        console.error('Error loading club:', err);
         throw redirect(303, '/admin/clubs');
     }
 };
@@ -24,19 +28,23 @@ export const actions: Actions = {
         const description = data.get('description')?.toString();
         const memberCount = parseInt(data.get('memberCount')?.toString() || '0');
 
-        const userId = locals.pb.authStore.model?.id;
+        const { data: { user } } = await locals.supabase.auth.getUser();
 
-        if (!userId) {
-            throw redirect(303, '/login');
+        if (!user) {
+            throw redirect(303, 'admin/login');
         }
 
         try {
-            await locals.pb.collection('clubs').update(params.id, {
-                'description': description,
-                'name': name,
-                'memberCount': memberCount,
-                'creator': userId,
-            });
+            const { error: updateError } = await locals.supabase
+                .from('clubs')
+                .update({
+                    description: description,
+                    name: name,
+                    memberCount: memberCount,
+                })
+                .eq('id', params.id);
+
+            if (updateError) throw updateError;
 
             return { success: true };
         } catch (error) {
