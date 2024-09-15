@@ -1,14 +1,3 @@
-<script lang="ts">
-  import Menu from "lucide-svelte/icons/menu";
-  import * as Sheet from "$lib/components/ui/sheet/index.js";
-  import Sun from "lucide-svelte/icons/sun";
-  import Moon from "lucide-svelte/icons/moon";
-  import { toggleMode } from "mode-watcher";
-  import { Button } from "$lib/components/ui/button/index.js";
-  import logo from "$lib/assets/logo.png";
-  import laurian from "$lib/assets/laurian.png";
-</script>
-
 <section
   class="container grid lg:grid-cols-2 place-items-center py-20 md:py-32 gap-10"
   style="height: calc(100vh - 4rem);"
@@ -23,10 +12,7 @@
         >” Botoşani
       </h1>
     </main>
-    <p class="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-left">
-      Avem o varietate de cluburi și activități care îți vor dezvolta
-      abilitățile, îți vor hrăni pasiunea și te vor motiva să continui
-    </p>
+    <h2 class="text-4xl font-semibold text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-left">Descoperă cluburile și activitățile din colegiul nostru.</h2>
     <div class="space-y-4 md:space-y-0 md:space-x-4">
       <a
         href="/discover"
@@ -56,7 +42,7 @@
   </div>
 
   <img
-    src={laurian}
+    src="/laurian.png"
     alt="Colegiul Naţional „A. T. Laurian” Botoşani"
     class="absolute bottom-0 right-0 object-cover -z-10 opacity-20 dark:opacity-10  dark:md:opacity-50"
     style="height: calc(100vh - 4rem);"

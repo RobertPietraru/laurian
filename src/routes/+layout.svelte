@@ -8,7 +8,6 @@
     import Moon from "lucide-svelte/icons/moon";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button/index.js";
-    import logo from "$lib/assets/logo.png";
     import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
     import { CircleUser } from "lucide-svelte";
@@ -45,7 +44,7 @@
         href="/"
         class="flex items-center gap-2 text-lg font-semibold md:text-base"
     >
-        <img src={logo} alt="A.T. Laurian" class="h-6 w-6" />
+        <img src="/logo.png" alt="A.T. Laurian" class="h-6 w-6" />
         <span class="sr-only">A.T. Laurian</span>
     </a>
 
@@ -130,7 +129,7 @@
                     href="/"
                     class="flex items-center gap-2 text-lg font-semibold"
                 >
-                    <img src={logo} alt="Acme Inc" class="h-6 w-6" />
+                    <img src="/logo.png" alt="Acme Inc" class="h-6 w-6" />
                     <span class="sr-only">Acasa</span>
                 </a>
                 <a
