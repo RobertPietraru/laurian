@@ -62,7 +62,28 @@
             {/each}
         </div>
     {:else}
-        <p>No clubs found.</p>
+        <div
+            class="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+        >
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold  sm:text-4xl">
+                    Nu există cluburi încă
+                </h2>
+                <p class="mt-4 text-xl text-gray-600">
+                    Începeți prin a adăuga primul club folosind butonul de mai
+                    jos.
+                </p>
+            </div>
+            <div class="mt-10">
+                <pre class="text-8xl leading-tight text-gray-400">¯\_(ツ)_/¯</pre>
+            </div>
+            <a
+                href="/admin/clubs/create"
+                class="mt-8 px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+            >
+                Adaugă primul club
+            </a>
+        </div>
     {/if}
 </main>
 <div class="fixed bottom-8 right-8">

@@ -23,7 +23,17 @@
     let memberCount = data.club.memberCount;
 
     $: markdownPreview = marked(description);
-    $: previewGallery =  data.club.files
+    $: previewGallery = data.club.files;
+
+    async function handleDelete() {
+        const formData = new FormData();
+        const response = await fetch(`/admin/club/${data.club.id}?/delete`, {
+            method: "POST",
+            body: formData,
+        });
+        const result: ActionResult = deserialize(await response.text());
+        applyAction(result);
+    }
 
     const handleFileChange = (event: Event) => {
         const e = event?.target as any;
@@ -70,6 +80,7 @@
 <div class="px-4 py-12 sm:px-6 lg:px-8 min-h-[100vh]">
     <div class="flex flex-col lg:flex-row gap-[10%]">
         <form
+            action="?/update"
             method="post"
             enctype="multipart/form-data"
             class="w-full lg:w-1/2 md:w-1/3"
@@ -114,7 +125,14 @@
                 />
             </div>
 
-            <div class="mt-4 flex justify-end">
+            <div class="mt-4 flex justify-end gap-4">
+                <Button
+                    variant="destructive"
+                    type="button"
+                    on:click={handleDelete}
+                >
+                    Sterge Club
+                </Button>
                 <Button
                     type="submit"
                     class={"bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary" +
@@ -148,7 +166,9 @@
             </div>
 
             <div class="mt-8">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                >
                     {#each previewGallery as image, index}
                         <div
                             class="relative overflow-hidden rounded-xl group"
