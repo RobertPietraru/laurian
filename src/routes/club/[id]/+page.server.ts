@@ -1,25 +1,21 @@
 import { error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { clubFromJson } from '$lib/models/club';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, locals }) => {
-    const { data: club, error: supabaseError } = await locals.supabase
-        .from('clubs')
-        .select('*')
-        .eq('id', params.id)
-        .single();
-
-    if (supabaseError) {
-        console.error('Error fetching club:', supabaseError);
-        throw error(404, 'Club not found');
+    const club = await locals.clubRepository.getClub(params.id);
+    if (club === "not_found") {
+        error(404, {
+            message: 'Clubul nu a fost gasit',
+        });
     }
-
     if (!club) {
-        throw error(404, 'Club not found');
+        error(500, {
+            message: 'Eroare interna',
+        });
     }
 
     return {
-        club: clubFromJson(club, env.KV_SUPABASE_URL)
+        club: club
     };
 }) satisfies PageServerLoad;

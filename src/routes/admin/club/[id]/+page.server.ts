@@ -1,19 +1,14 @@
 import { fail, redirect, error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
-import { clubFromJson } from '$lib/models/club';
+import { ClubRepository } from '$lib/clubs/club_repository';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
     try {
-        const { data: club, error: supabaseError } = await locals.supabase
-            .from('clubs')
-            .select('*')
-            .eq('id', params.id)
-            .single();
+        
 
-        if (supabaseError) throw error(404, 'Club not found');
         return {
-            club: clubFromJson(club, env.KV_SUPABASE_URL)
+            club: await locals.clubRepository.getClub(params.id)
         };
     } catch (err) {
         console.error('Error loading club:', err);

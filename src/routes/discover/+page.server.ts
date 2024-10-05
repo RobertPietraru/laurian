@@ -1,19 +1,13 @@
 import { env } from '$env/dynamic/private';
-import { clubFromJson } from '$lib/models/club';
+import { ClubRepository } from '$lib/clubs/club_repository';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
     try {
-        const { data: clubs, error } = await locals.supabase
-            .from('clubs')
-            .select('*')
-            .order('created', { ascending: false })
-            .limit(50);
-
-        if (error) throw error;
+        const clubs = await locals.clubRepository.getClubs(0, 50);
 
         return {
-            clubs: clubs.map(club => clubFromJson(club, env.KV_SUPABASE_URL))
+            clubs: clubs
         };
     } catch (error) {
         console.error('Error fetching clubs:', error);

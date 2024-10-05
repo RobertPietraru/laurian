@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import { clubFromJson } from '$lib/models/club';
+import { clubFromJson } from '$lib/clubs/models/club';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
