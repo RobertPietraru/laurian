@@ -4,21 +4,17 @@ import { env } from '$env/dynamic/private';
 import { ClubRepository } from '$lib/clubs/club_repository';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-    try {
-        const club = await locals.clubRepository.getClub(params.id);
-        if (club === null) {
-            return error(500, { message: 'O eroare necunoscuta a aparut' });
-        }
-        if (club === "not_found") {
-            return error(404, { message: 'Clubul nu a fost gasit' });
-        }
-        return {
-            club: club
-        };
-    } catch (err) {
-        console.error('Error loading club:', err);
-        throw redirect(303, '/admin/dashboard');
+
+    const club = await locals.clubRepository.getClub(params.id);
+    if (club === null) {
+        return error(500, { message: 'O eroare necunoscuta a aparut' });
     }
+    if (club === "not_found") {
+        return error(404, { message: 'Clubul nu a fost gasit' });
+    }
+    return {
+        club: club
+    };
 };
 
 export const actions: Actions = {
