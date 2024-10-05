@@ -70,7 +70,3 @@ Suntem deschiși contribuțiilor! Dacă doriți să contribuiți la acest proiec
 ## Licență
 
 Acest proiect este licențiat sub [GNU Affero General Public License v3.0](LICENSE).
-
-## Contact
-
-Pentru orice întrebări sau sugestii, vă rugăm să ne contactați la [robert.c.pietraru@gmail.com](mailto:robert.c.pietraru@gmail.com).
