@@ -10,6 +10,9 @@ export const actions: Actions = {
         const description = data.get('description')?.toString();
         const memberCount = parseInt(data.get('memberCount')?.toString() || '0');
         const files = [];
+        if (!name || !description || !memberCount) {
+            return fail(400, { message: 'Toate campurile sunt obligatorii' });
+        }
 
         for (let [key, value] of data.entries()) {
             if (value instanceof File) {
@@ -17,54 +20,15 @@ export const actions: Actions = {
             }
         }
 
-        console.log('parsed form data')
-
-        const { data: { user } } = await locals.supabase.auth.getUser();
-
-        if (!user) {
-            throw redirect(303, 'admin/login');
+        const id = await locals.clubRepository.createClub({
+            description,
+            memberCount,
+            name,
+            files
+        })
+        if (id === null) {  
+            return fail(500, { message: 'Eroare la crearea clubului' });
         }
-        console.log('retrieved user info')
-
-        var clubRecordId: string
-        try {
-            console.log('creating record')
-            const { data: clubRecord, error } = await locals.supabase
-                .from('clubs')
-                .insert({
-                    id: crypto.randomUUID(),
-                    description,
-                    name,
-                    memberCount,
-                    files: files.map(file => file.name)  // Store file names in the database
-                })
-                .select()
-                .single();
-
-            if (error) throw error;
-            clubRecordId = clubRecord.id
-
-            console.log('Created club record');
-
-            // Upload files to storage
-            for (const file of files) {
-                const { error: uploadError } = await locals.supabase.storage
-                    .from('laurianbucket')
-                    .upload(`${clubRecordId}/${file.name}`, file);
-
-                if (uploadError) {
-                    console.error('Error uploading file:', uploadError);
-                    // You might want to handle this error, perhaps by deleting the club record
-                    // and returning a failure response
-                }
-            }
-
-            console.log('Uploaded files');
-
-        } catch (error) {
-            console.log('error', error);
-            return fail(500, { message: 'Failed to create club' });
-        }
-        throw redirect(303, `/admin/club/${clubRecordId}`);
+        throw redirect(303, `/admin/club/${id}`);
     }
 }

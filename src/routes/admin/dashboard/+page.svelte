@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { PageData } from "./$types";
-    import type { Club } from "$lib/models/club";
+    import type { Club } from "$lib/clubs/models";
 
     import { Plus, User } from "lucide-svelte";
     import * as Card from "$lib/components/ui/card";

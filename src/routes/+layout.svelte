@@ -1,6 +1,6 @@
 <script lang="ts">
     import "../app.css";
-
+    import { Toaster } from "$lib/components/ui/sonner";
     import { ModeWatcher } from "mode-watcher";
     import Menu from "lucide-svelte/icons/menu";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
@@ -34,7 +34,7 @@
         location.reload();
     }
 </script>
-
+<Toaster />
 <ModeWatcher />
 
 <header

@@ -14,6 +14,7 @@
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
     import * as Card from "$lib/components/ui/card";
+    import { toast } from "svelte-sonner";
 
     export let data;
 
@@ -68,6 +69,7 @@
         const result: ActionResult = deserialize(await response.text());
 
         if (result.type === "success") {
+            toast.success("Club actualizat cu succes");
             await invalidateAll();
         }
 

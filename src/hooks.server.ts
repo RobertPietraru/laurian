@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private'
+import { ClubRepository } from '$lib/clubs/club_repository'
 import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
@@ -6,6 +7,8 @@ import { sequence } from '@sveltejs/kit/hooks'
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(env.KV_NEXT_PUBLIC_SUPABASE_URL, env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+
+
 
 
         cookies: {
@@ -17,6 +20,7 @@ const supabase: Handle = async ({ event, resolve }) => {
             },
         },
     })
+
 
     event.locals.safeGetSession = async () => {
         const {
@@ -36,6 +40,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 
         return { session, user }
     }
+    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.KV_SUPABASE_URL);
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
