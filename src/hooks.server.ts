@@ -3,7 +3,7 @@ import { ClubRepository } from '$lib/clubs/club_repository'
 import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-
+import { AuthRepository } from './lib/auth/repository'
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(env.KV_NEXT_PUBLIC_SUPABASE_URL, env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY, {
@@ -41,6 +41,7 @@ const supabase: Handle = async ({ event, resolve }) => {
         return { session, user }
     }
     event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.KV_SUPABASE_URL);
+    event.locals.authRepository = new AuthRepository(event.locals.supabase);
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

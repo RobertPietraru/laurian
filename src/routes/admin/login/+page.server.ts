@@ -1,5 +1,4 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
@@ -22,13 +21,13 @@ export const actions = {
             return fail(400, { emailRequired: !email, passwordRequired: !password });
         }
 
-        const { error } = await locals.supabase.auth.signInWithPassword({
-            email,
-            password
-        });
+        const error = await locals.authRepository.signIn(email, password);
 
         if (error) {
-            return fail(500, { fail: true, message: error.message });
+            if (error === "wrong_credentials" ){
+                return fail(400, {message: "Email sau parolă incorecte"});
+            }
+            return fail(500, {message: "Eroare necunoscută"});
         }
 
         throw redirect(303, '/admin/dashboard');
