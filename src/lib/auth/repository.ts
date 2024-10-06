@@ -6,11 +6,14 @@ export class AuthRepository {
     }
 
     async signIn(email: string, password: string): Promise<"wrong_credentials" | "unknown_error" | null> {
-        const { data, error } = await this.supabase.auth.signInWithPassword({
+        const { error } = await this.supabase.auth.signInWithPassword({
             email,
             password,
         });
         if (error) {
+            if (error.status === 400) {
+                return "wrong_credentials";
+            }
             console.error("Error signing in: ", error);
             return "unknown_error";
         }

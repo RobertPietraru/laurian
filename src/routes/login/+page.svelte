@@ -16,7 +16,7 @@
             <CardTitle>Login</CardTitle>
         </CardHeader>
         <CardContent>
-            {#if form?.fail}
+            {#if form?.message}
                 <Alert variant="destructive" class="mb-6">
                     <AlertDescription>{form.message}</AlertDescription>
                 </Alert>
@@ -24,11 +24,11 @@
             <form action="?/login" method="post" class="space-y-6">
                 <div class="space-y-3">
                     <Label for="email">E-Mail</Label>
-                    <Input id="email" name="email" type="email" placeholder="mail@example.com" required />
+                    <Input id="email" name="email" type="email" placeholder="mail@example.com" required value={form?.email}/>
                 </div>
                 <div class="space-y-3">
                     <Label for="password">Password</Label>
-                    <Input id="password" name="password" type="password" placeholder="Password" required />
+                    <Input id="password" name="password" type="password" placeholder="Password" required value={form?.password} />
                 </div>
                 <Button type="submit" class="w-full mt-4">Login</Button>
             </form>

@@ -34,6 +34,7 @@ const supabase: Handle = async ({ event, resolve }) => {
             data: { user },
             error,
         } = await event.locals.supabase.auth.getUser()
+
         if (error) {
             return { session: null, user: null }
         }
@@ -50,13 +51,24 @@ const supabase: Handle = async ({ event, resolve }) => {
     })
 }
 
+const completelyUnprotectedRoutes = ['/login', '/register'];
 const authGuard: Handle = async ({ event, resolve }) => {
     const { session, user } = await event.locals.safeGetSession()
     event.locals.session = session
     event.locals.user = user
+    if (event.url.pathname == '/') {
+        return resolve(event);
+    }
 
-    if (!event.locals.session && event.url.pathname.startsWith('/admin') && !event.url.pathname.startsWith('/admin/login')) {
-        throw redirect(303, '/admin/login')
+    /// if the user is not logged in, check if the route is completely unprotected
+    /// if the route is protected, redirect to login
+    if (!event.locals.session) {
+        for (const route of completelyUnprotectedRoutes) {
+            if (event.url.pathname.startsWith(route)) {
+                return resolve(event);
+            }
+        }
+        throw redirect(303, '/login')
     }
 
     return resolve(event)

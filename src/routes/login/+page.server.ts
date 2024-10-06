@@ -25,9 +25,9 @@ export const actions = {
 
         if (error) {
             if (error === "wrong_credentials" ){
-                return fail(400, {message: "Email sau parolă incorecte"});
+                return fail(400, {message: "Email sau parolă incorecte", email: email, password: password});
             }
-            return fail(500, {message: "Eroare necunoscută"});
+            return fail(500, {message: "Eroare necunoscută", email: email, password: password});
         }
 
         throw redirect(303, '/admin/dashboard');
