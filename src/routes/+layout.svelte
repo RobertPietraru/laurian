@@ -27,10 +27,9 @@
 
 		return () => data.subscription.unsubscribe();
 	});
-    function logout() {
-        supabase.auth.signOut();
-        invalidate('supabase:auth');
-        // refresh the page
+    async function logout() {
+        await supabase.auth.signOut();
+        await invalidate('supabase:auth');
         location.reload();
     }
 </script>
