@@ -4,9 +4,11 @@ import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { AuthRepository } from './lib/auth/repository'
+import { MAINTENANCE_MODE } from '$env/static/private'
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(env.KV_NEXT_PUBLIC_SUPABASE_URL, env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+
 
 
 
@@ -74,4 +76,14 @@ const authGuard: Handle = async ({ event, resolve }) => {
     return resolve(event)
 }
 
-export const handle: Handle = sequence(supabase, authGuard)
+const maintenanceGuard: Handle = async ({ event, resolve }) => {
+    if (MAINTENANCE_MODE) {
+        if (event.url.pathname == '/maintenance') {
+            return resolve(event);
+        }
+        throw redirect(303, '/maintenance')
+    }
+    return resolve(event)
+}
+
+export const handle: Handle = sequence(maintenanceGuard, supabase, authGuard)
