@@ -10,9 +10,9 @@
     </p>
 
     <div class="flex justify-center gap-8">
-        <img title="hamster-loader.gif" src="/loading.gif" width="100" />
-        <img title="hamster-loader.gif" src="/loading.gif" width="100" />
-        <img title="hamster-loader.gif" src="/loading.gif" width="100" />
-        <img title="hamster-loader.gif" src="/loading.gif" width="100" />
+        <img alt="hamster" title="hamster-loader.gif" src="/loading.gif" width="100" />
+        <img alt="hamster" title="hamster-loader.gif" src="/loading.gif" width="100" />
+        <img alt="hamster" title="hamster-loader.gif" src="/loading.gif" width="100" />
+        <img alt="hamster" title="hamster-loader.gif" src="/loading.gif" width="100" />
     </div>
 </main>
