@@ -13,7 +13,7 @@
 <div class="h-full flex items-center justify-center min-h-[100vh]">
     <Card class="w-[350px] m-8">
         <CardHeader class="mb-4">
-            <CardTitle>Autentificare</CardTitle>
+            <CardTitle>Înregistrare</CardTitle>
         </CardHeader>
         <CardContent>
             {#if form?.message}
@@ -21,20 +21,24 @@
                     <AlertDescription>{form.message}</AlertDescription>
                 </Alert>
             {/if}
-            <form action="?/login" method="post" class="space-y-6">
+            <form action="?/register" method="post" class="space-y-6">
+                <div class="space-y-3">
+                    <Label for="name">Nume</Label>
+                    <Input id="name" name="name" type="text" placeholder="Numele tău" required value={form?.name}/>
+                </div>
                 <div class="space-y-3">
                     <Label for="email">E-Mail</Label>
                     <Input id="email" name="email" type="email" placeholder="mail@exemplu.com" required value={form?.email}/>
                 </div>
                 <div class="space-y-3">
                     <Label for="password">Parolă</Label>
-                    <Input id="password" name="password" type="password" placeholder="Parolă" required value={form?.password} />
+                    <Input id="password" name="password" type="password" placeholder="Parolă" required />
                 </div>
-                <Button type="submit" class="w-full mt-4">Autentificare</Button>
+                <Button type="submit" class="w-full mt-4">Înregistrare</Button>
             </form>
         </CardContent>
         <CardFooter class="mt-4">
-            <Button variant="outline" class="w-full" href="/register">Înregistrare</Button>
+            <Button variant="outline" class="w-full" href="/login">Autentificare</Button>
         </CardFooter>
     </Card>
 </div>
