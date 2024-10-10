@@ -1,5 +1,3 @@
-import { env } from '$env/dynamic/private';
-import { ClubRepository } from '$lib/clubs/club_repository';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
