@@ -77,11 +77,15 @@ const authGuard: Handle = async ({ event, resolve }) => {
 }
 
 const maintenanceGuard: Handle = async ({ event, resolve }) => {
-    if (MAINTENANCE_MODE) {
+    if (MAINTENANCE_MODE === 'true') {
         if (event.url.pathname == '/maintenance') {
             return resolve(event);
         }
         throw redirect(303, '/maintenance')
+    } else {
+        if (event.url.pathname == '/maintenance') {
+            throw redirect(303, '/')
+        }
     }
     return resolve(event)
 }
