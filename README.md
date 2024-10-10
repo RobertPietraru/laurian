@@ -37,19 +37,19 @@ O lista cu toate cluburile din laurian
 3. Configurați variabilele de mediu:
    Creați un fișier `.env` în directorul rădăcină și adăugați următoarele variabile (înlocuiți valorile cu cele proprii):
    ```
-    KV_POSTGRES_URL
-    KV_POSTGRES_PRISMA_URL
-    KV_SUPABASE_URL
-    KV_NEXT_PUBLIC_SUPABASE_URL
-    KV_POSTGRES_URL_NON_POOLING
-    KV_SUPABASE_JWT_SECRET
-    KV_POSTGRES_USER
-    KV_NEXT_PUBLIC_SUPABASE_ANON_KEY
-    KV_POSTGRES_PASSWORD
-    KV_POSTGRES_DATABASE
-    KV_SUPABASE_SERVICE_ROLE_KEY
-    KV_POSTGRES_HOST
-    KV_NEXT_PUBLIC_SUPABASE_ANON_KEY
+    POSTGRES_URL
+    POSTGRES_PRISMA_URL
+    SUPABASE_URL
+    NEXT_PUBLIC_SUPABASE_URL
+    POSTGRES_URL_NON_POOLING
+    SUPABASE_JWT_SECRET
+    POSTGRES_USER
+    NEXT_PUBLIC_SUPABASE_ANON_KEY
+    POSTGRES_PASSWORD
+    POSTGRES_DATABASE
+    SUPABASE_SERVICE_ROLE_KEY
+    POSTGRES_HOST
+    NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
 
 4. Rulați aplicația în modul de dezvoltare:

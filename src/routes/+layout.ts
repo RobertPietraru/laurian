@@ -8,14 +8,16 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
    * session refresh.
    */
   depends('supabase:auth')
+  console.log(data.publicSupabaseURL)
+  console.log(data.publicSupabaseAnonKey)
 
   const supabase = isBrowser()
-    ? createBrowserClient(data.publicSupabaseURL, data.publicSupabaseAnonKey, {
+    ? createBrowserClient(data.publicSupabaseURL!, data.publicSupabaseAnonKey!, {
         global: {
           fetch,
         },
       })
-    : createServerClient(data.publicSupabaseURL, data.publicSupabaseAnonKey, {
+    : createServerClient(data.publicSupabaseURL!, data.publicSupabaseAnonKey!, {
 
         global: {
           fetch,

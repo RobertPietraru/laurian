@@ -6,8 +6,8 @@ export const load: LayoutServerLoad = async ({ locals: { safeGetSession }, cooki
   return {
     session,
     cookies: cookies.getAll(),
-    publicSupabaseURL: env.KV_NEXT_PUBLIC_SUPABASE_URL,
-    publicSupabaseAnonKey: env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY
+    publicSupabaseURL: env.NEXT_PUBLIC_SUPABASE_URL,
+    publicSupabaseAnonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   }
 }

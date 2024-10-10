@@ -4,10 +4,9 @@ import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { AuthRepository } from './lib/auth/repository'
-import { MAINTENANCE_MODE } from '$env/static/private'
 
 const supabase: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = createServerClient(env.KV_NEXT_PUBLIC_SUPABASE_URL, env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    event.locals.supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
 
 
 
@@ -43,7 +42,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 
         return { session, user }
     }
-    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.KV_SUPABASE_URL);
+    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.SUPABASE_URL);
     event.locals.authRepository = new AuthRepository(event.locals.supabase);
 
     return resolve(event, {
@@ -77,7 +76,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 }
 
 const maintenanceGuard: Handle = async ({ event, resolve }) => {
-    if (MAINTENANCE_MODE === 'true') {
+    if (env.MAINTENANCE_MODE === 'true') {
         if (event.url.pathname == '/maintenance') {
             return resolve(event);
         }
