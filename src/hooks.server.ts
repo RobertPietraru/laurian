@@ -56,7 +56,9 @@ const completelyUnprotectedRoutes = ['/login', '/register', '/discover', '/about
 const authGuard: Handle = async ({ event, resolve }) => {
     const { session, user } = await event.locals.safeGetSession()
     event.locals.session = session
-    event.locals.user = user
+    if (session) {
+        event.locals.user = await event.locals.authRepository.getUser();
+    }
     if (event.url.pathname == '/') {
         return resolve(event);
     }

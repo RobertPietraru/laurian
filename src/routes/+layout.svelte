@@ -8,31 +8,34 @@
     import Moon from "lucide-svelte/icons/moon";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button/index.js";
-    import { invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
+    import { invalidate } from "$app/navigation";
+    import { onMount } from "svelte";
     import { CircleUser } from "lucide-svelte";
     import * as Popover from "$lib/components/ui/popover/index.js";
     import LayoutDashboard from "lucide-svelte/icons/layout-dashboard";
     import LogOut from "lucide-svelte/icons/log-out";
 
-	export let data;
-	$: ({ session, supabase } = data);
+    export let data;
+    $: ({ session, supabase } = data);
 
-	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('supabase:auth');
-			}
-		});
+    onMount(() => {
+        const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
+            if (newSession?.expires_at !== session?.expires_at) {
+                invalidate("supabase:auth");
+            }
+        });
 
-		return () => data.subscription.unsubscribe();
-	});
+        return () => data.subscription.unsubscribe();
+    });
+
+    console.log(data.session);
     async function logout() {
         await supabase.auth.signOut();
-        await invalidate('supabase:auth');
+        await invalidate("supabase:auth");
         location.reload();
     }
 </script>
+
 <Toaster />
 <ModeWatcher />
 
@@ -77,38 +80,36 @@
         >
             Despre
         </a>
-        {#if data.session}
-            <Popover.Root>
-                <Popover.Trigger asChild let:builder>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        class="text-muted-foreground hover:text-foreground transition-colors"
-                        builders={[builder]}
+        <Popover.Root>
+            <Popover.Trigger asChild let:builder>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    class="text-muted-foreground hover:text-foreground transition-colors"
+                    builders={[builder]}
+                >
+                    <CircleUser class="h-4 w-4" />
+                </Button>
+            </Popover.Trigger>
+            <Popover.Content class="w-48">
+                <div class="flex flex-col gap-2">
+                    <a
+                        href="/admin/dashboard"
+                        class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                     >
-                        <CircleUser class="h-4 w-4" />
-                    </Button>
-                </Popover.Trigger>
-                <Popover.Content class="w-48">
-                    <div class="flex flex-col gap-2">
-                        <a
-                            href="/admin/dashboard"
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                        >
-                            <LayoutDashboard class="h-4 w-4" />
-                            <span>Dashboard</span>
-                        </a>
-                        <button
-                            on:click={logout}
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                        >
-                            <LogOut class="h-4 w-4" />
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </Popover.Content>
-            </Popover.Root>
-        {/if}
+                        <LayoutDashboard class="h-4 w-4" />
+                        <span>Dashboard</span>
+                    </a>
+                    <button
+                        on:click={logout}
+                        class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                    >
+                        <LogOut class="h-4 w-4" />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </Popover.Content>
+        </Popover.Root>
     </nav>
     <Sheet.Root>
         <Sheet.Trigger asChild let:builder>
@@ -131,10 +132,7 @@
                     <img src="/logo.png" alt="Acme Inc" class="h-6 w-6" />
                     <span class="sr-only">Acasa</span>
                 </a>
-                <a
-                    href="/"
-                    class="text-muted-foreground hover:text-foreground"
-                >
+                <a href="/" class="text-muted-foreground hover:text-foreground">
                     Acasa
                 </a>
                 <a
@@ -149,7 +147,8 @@
                 >
                     Despre
                 </a>
-                {#if data.session}
+
+                {#if data.user?.role === "admin"}
                     <a
                         href="/admin/dashboard"
                         class="text-muted-foreground hover:text-foreground"
@@ -216,7 +215,10 @@
                 </h2>
                 <ul class="text-gray-500 dark:text-gray-400 font-medium">
                     <li class="mb-4">
-                        <a href="https://github.com/RobertPietraru/laurian/blob/master/LICENSE" class="hover:underline">Licență</a>
+                        <a
+                            href="https://github.com/RobertPietraru/laurian/blob/master/LICENSE"
+                            class="hover:underline">Licență</a
+                        >
                     </li>
                 </ul>
             </div>
@@ -228,16 +230,28 @@
                 </h2>
                 <ul class="text-gray-500 dark:text-gray-400 font-medium">
                     <li class="mb-4">
-                        <a href="https://github.com/RobertPietraru/laurian" class="hover:underline">Pagina Github</a>
+                        <a
+                            href="https://github.com/RobertPietraru/laurian"
+                            class="hover:underline">Pagina Github</a
+                        >
                     </li>
                     <li class="mb-4">
-                        <a href="https://github.com/RobertPietraru/laurian/issues" class="hover:underline">Raportează o problemă</a>
+                        <a
+                            href="https://github.com/RobertPietraru/laurian/issues"
+                            class="hover:underline">Raportează o problemă</a
+                        >
                     </li>
                     <li class="mb-4">
-                        <a href="https://github.com/RobertPietraru/laurian/issues" class="hover:underline">Vino cu o idee</a>
+                        <a
+                            href="https://github.com/RobertPietraru/laurian/issues"
+                            class="hover:underline">Vino cu o idee</a
+                        >
                     </li>
                     <li class="mb-4">
-                        <a href="https://github.com/RobertPietraru/laurian/pulls" class="hover:underline">Contribuie cod</a>
+                        <a
+                            href="https://github.com/RobertPietraru/laurian/pulls"
+                            class="hover:underline">Contribuie cod</a
+                        >
                     </li>
                 </ul>
             </div>
@@ -247,8 +261,8 @@
         >
             <span
                 class="text-sm text-gray-500 dark:text-gray-300 sm:text-center"
-                >© 2024 Colegiul Naţional „A. T. Laurian” Botoşani. Toate drepturile
-                rezervate.
+                >© 2024 Colegiul Naţional „A. T. Laurian” Botoşani. Toate
+                drepturile rezervate.
             </span>
             <div
                 class="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse"

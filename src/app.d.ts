@@ -1,6 +1,7 @@
-import type { Session, SupabaseClient, User } from '@supabase/supabase-js'
+import type { Session, SupabaseClient  } from '@supabase/supabase-js'
 import type { ClubRepository } from './lib/clubs/club_repository'
 import type { AuthRepository } from './lib/auth/repository'
+import type { AppUser } from './lib/auth/models'
 
 declare global {
   namespace App {
@@ -11,7 +12,7 @@ declare global {
       authRepository: AuthRepository
       safeGetSession: () => Promise<{ session: Session | null; user: User | null }>
       session: Session | null
-      user: User | null
+      user: AppUser | null
     }
     interface PageData {
       session: Session | null
