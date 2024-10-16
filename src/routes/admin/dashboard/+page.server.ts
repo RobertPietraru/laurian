@@ -1,8 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 
     const clubs = await locals.clubRepository.getClubs(1, 10);
     if (clubs === null) {

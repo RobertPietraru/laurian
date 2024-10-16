@@ -28,7 +28,6 @@
         return () => data.subscription.unsubscribe();
     });
 
-    console.log(data.session);
     async function logout() {
         await supabase.auth.signOut();
         await invalidate("supabase:auth");
@@ -93,13 +92,15 @@
             </Popover.Trigger>
             <Popover.Content class="w-48">
                 <div class="flex flex-col gap-2">
-                    <a
-                        href="/admin/dashboard"
-                        class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                    >
-                        <LayoutDashboard class="h-4 w-4" />
-                        <span>Dashboard</span>
-                    </a>
+                    {#if data.isAdmin}
+                        <a
+                            href="/admin/dashboard"
+                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                        >
+                            <LayoutDashboard class="h-4 w-4" />
+                            <span>Dashboard</span>
+                        </a>
+                    {/if}
                     <button
                         on:click={logout}
                         class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
@@ -148,7 +149,7 @@
                     Despre
                 </a>
 
-                {#if data.user?.role === "admin"}
+                {#if data.isAdmin === true}
                     <a
                         href="/admin/dashboard"
                         class="text-muted-foreground hover:text-foreground"

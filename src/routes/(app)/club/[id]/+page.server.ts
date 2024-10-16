@@ -1,6 +1,4 @@
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, locals }) => {
     const club = await locals.clubRepository.getClub(params.id);
@@ -18,4 +16,4 @@ export const load = (async ({ params, locals }) => {
     return {
         club: club
     };
-}) satisfies PageServerLoad;
+}) ;

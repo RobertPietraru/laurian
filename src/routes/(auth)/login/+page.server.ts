@@ -1,5 +1,4 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
     const { data: { session } } = await locals.supabase.auth.getSession();
@@ -9,7 +8,7 @@ export const load = (async ({ locals }) => {
     }
 
     return {};
-}) satisfies PageServerLoad;
+});
 
 export const actions = {
     login: async ({ locals, request }) => {
@@ -24,10 +23,10 @@ export const actions = {
         const error = await locals.authRepository.signIn(email, password);
 
         if (error) {
-            if (error === "wrong_credentials" ){
-                return fail(400, {message: "Email sau parolă incorecte", email: email, password: password});
+            if (error === "wrong_credentials") {
+                return fail(400, { message: "Email sau parolă incorecte", email: email, password: password });
             }
-            return fail(500, {message: "Eroare necunoscută", email: email, password: password});
+            return fail(500, { message: "Eroare necunoscută", email: email, password: password });
         }
 
         throw redirect(303, '/admin/dashboard');

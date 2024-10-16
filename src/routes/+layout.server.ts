@@ -6,9 +6,10 @@ export const load: LayoutServerLoad = async ({ locals , cookies }) => {
   const user = locals.user;
   console.log(user);
 
+  const isAdmin = user?.role === 'admin';
   return {
     user,
-    session,
+    isAdmin,
     cookies: cookies.getAll(),
     publicSupabaseURL: env.NEXT_PUBLIC_SUPABASE_URL,
     publicSupabaseAnonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY

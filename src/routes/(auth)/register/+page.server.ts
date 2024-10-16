@@ -1,5 +1,4 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
     const { data: { session } } = await locals.supabase.auth.getSession();
@@ -9,7 +8,7 @@ export const load = (async ({ locals }) => {
     }
 
     return {};
-}) satisfies PageServerLoad;
+});
 
 export const actions = {
     register: async ({ locals, request }) => {
@@ -30,7 +29,7 @@ export const actions = {
 
         const error = await locals.authRepository.signUp(email, password, name);
 
-        console.log(error); 
+        console.log(error);
         if (error) {
             if (error === "email_taken") {
                 return fail(400, { message: "Adresa de email este deja înregistrată", email: email });
