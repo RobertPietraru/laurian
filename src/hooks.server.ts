@@ -4,10 +4,9 @@ import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { AuthRepository } from './lib/auth/repository'
-import { MAINTENANCE_MODE } from '$env/static/private'
 
 const supabase: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = createServerClient(env.KV_NEXT_PUBLIC_SUPABASE_URL, env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    event.locals.supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
 
 
 
@@ -43,7 +42,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 
         return { session, user }
     }
-    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.KV_SUPABASE_URL);
+    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.SUPABASE_URL);
     event.locals.authRepository = new AuthRepository(event.locals.supabase);
 
     return resolve(event, {
@@ -53,17 +52,17 @@ const supabase: Handle = async ({ event, resolve }) => {
     })
 }
 
-const completelyUnprotectedRoutes = ['/login', '/register'];
+const completelyUnprotectedRoutes = ['/login', '/register', '/discover', '/about'];
 const authGuard: Handle = async ({ event, resolve }) => {
     const { session, user } = await event.locals.safeGetSession()
     event.locals.session = session
-    event.locals.user = user
+    if (session) {
+        event.locals.user = await event.locals.authRepository.getUser();
+    }
     if (event.url.pathname == '/') {
         return resolve(event);
     }
 
-    /// if the user is not logged in, check if the route is completely unprotected
-    /// if the route is protected, redirect to login
     if (!event.locals.session) {
         for (const route of completelyUnprotectedRoutes) {
             if (event.url.pathname.startsWith(route)) {
@@ -77,11 +76,15 @@ const authGuard: Handle = async ({ event, resolve }) => {
 }
 
 const maintenanceGuard: Handle = async ({ event, resolve }) => {
-    if (MAINTENANCE_MODE) {
+    if (env.MAINTENANCE_MODE === 'true') {
         if (event.url.pathname == '/maintenance') {
             return resolve(event);
         }
         throw redirect(303, '/maintenance')
+    } else {
+        if (event.url.pathname == '/maintenance') {
+            throw redirect(303, '/')
+        }
     }
     return resolve(event)
 }

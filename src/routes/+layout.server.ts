@@ -1,13 +1,18 @@
 import type { LayoutServerLoad } from './$types'
 import { env } from '$env/dynamic/private'
 
-export const load: LayoutServerLoad = async ({ locals: { safeGetSession }, cookies }) => {
-  const { session } = await safeGetSession()
+export const load: LayoutServerLoad = async ({ locals , cookies }) => {
+  const { session } = await locals.safeGetSession()
+  const user = locals.user;
+  console.log(user);
+
+  const isAdmin = user?.role === 'admin';
   return {
-    session,
+    user,
+    isAdmin,
     cookies: cookies.getAll(),
-    publicSupabaseURL: env.KV_NEXT_PUBLIC_SUPABASE_URL,
-    publicSupabaseAnonKey: env.KV_NEXT_PUBLIC_SUPABASE_ANON_KEY
+    publicSupabaseURL: env.NEXT_PUBLIC_SUPABASE_URL,
+    publicSupabaseAnonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   }
 }

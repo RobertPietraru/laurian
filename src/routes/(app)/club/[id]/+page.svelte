@@ -2,7 +2,7 @@
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
     import SvelteMarkdown from 'svelte-markdown';
-    import type { PageData } from './$types';
+    import type { PageData } from "./$types";
 
     export let data: PageData;
 

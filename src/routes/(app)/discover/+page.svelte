@@ -17,7 +17,8 @@
     </h2>
 
     <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {#each data.clubs as club (club.name)}
+        {#if data.clubs}
+        {#each data.clubs  as club}
             <Card.Root class="group hover:shadow-xl transition-shadow duration-300 overflow-hidden">
                 <div class="relative overflow-hidden">
                     {#if club.files.length > 0}
@@ -55,5 +56,10 @@
                 </div>
             </Card.Root>
         {/each}
+        {:else}
+        <div class="text-center text-gray-500">
+            <p>Nu există cluburi</p>
+        </div>
+        {/if}
     </div>
 </section>

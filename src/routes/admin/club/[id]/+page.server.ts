@@ -1,9 +1,7 @@
 import { fail, redirect, error } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-import { env } from '$env/dynamic/private';
-import { ClubRepository } from '$lib/clubs/club_repository';
+import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load = async ({ params, locals }) => {
 
     const club = await locals.clubRepository.getClub(params.id);
     if (club === null) {
