@@ -71,14 +71,16 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
     return resolve(event)
 }
-const adminGuard: Handle = async ({ event, resolve }) => {
+const moderatorGuard: Handle = async ({ event, resolve }) => {
+    console.log('moderator guard')
     if (event.url.pathname == '/') {
         return resolve(event);
     }
-    if (event.locals.user?.role !== "admin" && event.url.pathname.startsWith('/admin')) {
-        logger.info('Admin guard: redirecting to login')
+    if (event.locals.user?.role === "user" && event.url.pathname.startsWith('/moderator')) {
+        logger.info('Moderator guard: redirecting to login')
         throw redirect(303, '/login')
     }
+    console.log('resolving');
 
     return resolve(event)
 }
@@ -97,4 +99,4 @@ const maintenanceGuard: Handle = async ({ event, resolve }) => {
     return resolve(event)
 }
 
-export const handle: Handle = sequence(supabase, authGuard)
+export const handle: Handle = sequence(supabase, authGuard, moderatorGuard)

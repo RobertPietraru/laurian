@@ -1,11 +1,11 @@
 import type { LayoutServerLoad } from './$types'
 import { env } from '$env/dynamic/private'
 
-export const load: LayoutServerLoad = async ({ locals , cookies }) => {
+export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const { session } = await locals.safeGetSession()
   const user = locals.user;
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'moderator' || user?.role === 'admin';
   return {
     user,
     isAdmin,

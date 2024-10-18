@@ -28,6 +28,6 @@ export const actions = {
             return fail(500, { message: "Eroare necunoscută", email: email, password: password });
         }
 
-        throw redirect(303, '/admin/dashboard');
+        throw redirect(303, '/moderator/dashboard');
     }
 }
