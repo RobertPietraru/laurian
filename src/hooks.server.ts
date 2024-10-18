@@ -89,4 +89,4 @@ const maintenanceGuard: Handle = async ({ event, resolve }) => {
     return resolve(event)
 }
 
-export const handle: Handle = sequence(maintenanceGuard, supabase, authGuard)
+export const handle: Handle = sequence(supabase, authGuard)
