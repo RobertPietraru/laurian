@@ -28,7 +28,7 @@
 
     async function handleDelete() {
         const formData = new FormData();
-        const response = await fetch(`/admin/club/${data.club.id}?/delete`, {
+        const response = await fetch(`/moderator/club/${data.club.id}?/delete`, {
             method: "POST",
             body: formData,
         });

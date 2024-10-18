@@ -27,6 +27,6 @@ export const actions: Actions = {
         if (id === null) {  
             return fail(500, { message: 'Eroare la crearea clubului' });
         }
-        throw redirect(303, `/admin/club/${id}`);
+        throw redirect(303, `/moderator/club/${id}`);
     }
 }

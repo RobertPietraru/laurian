@@ -51,7 +51,7 @@
                                 <span>{club.memberCount} membri</span>
                             </div>
                             <a
-                                href={`/admin/club/${club.id}`}
+                                href={`/moderator/club/${club.id}`}
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors duration-300"
                             >
                                 Editează
@@ -78,7 +78,7 @@
                 <pre class="text-8xl leading-tight text-gray-400">¯\_(ツ)_/¯</pre>
             </div>
             <a
-                href="/admin/clubs/create"
+                href="/moderator/clubs/create"
                 class="mt-8 px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
             >
                 Adaugă primul club
@@ -88,7 +88,7 @@
 </main>
 <div class="fixed bottom-8 right-8">
     <a
-        href="/admin/clubs/create"
+        href="/moderator/clubs/create"
         class="flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-300"
     >
         <Plus class="h-8 w-8" />

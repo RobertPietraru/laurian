@@ -49,6 +49,6 @@ export const actions: Actions = {
         if (err) {
             return fail(500, { message: 'Eroare la stergerea datelor' });
         }
-        throw redirect(303, '/admin/dashboard');
+        throw redirect(303, '/moderator/dashboard');
     }
 };

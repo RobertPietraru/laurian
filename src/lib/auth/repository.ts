@@ -34,7 +34,7 @@ export class AuthRepository {
         const authUser = data.user;
         const { data: userData, error: userError } = await this.supabase.from("users").select("*").eq("auth", authUser.id);
 
-        if (userError) {
+        if (userError || userData.length == 0) {
             logger.error("Error getting user: ", userError);
             return null;
         }
