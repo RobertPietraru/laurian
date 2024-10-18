@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AppUser, AppUserRole } from "./models";
 
+import { logger } from '$lib/stores/logger';
+
 export class AuthRepository {
     constructor(private readonly supabase: SupabaseClient) {
         this.supabase = supabase;
@@ -15,7 +17,7 @@ export class AuthRepository {
             if (error.status === 400) {
                 return "wrong_credentials";
             }
-            console.error("Error signing in: ", error);
+            logger.error("Error signing in: ", error);
             return "unknown_error";
         }
         return null;
@@ -25,7 +27,7 @@ export class AuthRepository {
 
         if (error || !data.user) {
             if (error) {
-                console.error("Error getting user 1: ", error);
+                logger.error("Error getting user 1: ", error);
             }
             return null;
         }
@@ -33,7 +35,7 @@ export class AuthRepository {
         const { data: userData, error: userError } = await this.supabase.from("users").select("*").eq("auth", authUser.id);
 
         if (userError) {
-            console.error("Error getting user: ", userError);
+            logger.error("Error getting user: ", userError);
             return null;
         }
         const user = userData[0] as Partial<AppUser>;
@@ -41,7 +43,6 @@ export class AuthRepository {
         if (roleError) {
             return null;
         }
-        console.log(roleData);
         const role = roleData[0].role as number;
         if (role == 1) {
             user.role = 'admin' satisfies AppUserRole;
@@ -54,7 +55,6 @@ export class AuthRepository {
         return user as AppUser;
     }
     async signUp(email: string, password: string, name: string): Promise<"email_taken" | "unknown_error" | null> {
-        console.log(email, password, name);
         const { error } = await this.supabase.auth.signUp({
             email,
             password,
@@ -62,23 +62,23 @@ export class AuthRepository {
 
         if (error) {
             if (error.status === 400) {
-                console.log("error", error);
+                logger.error("error", error);
                 return "email_taken";
             } else if (error.status === 422) {
-                console.log("error", error);
+                logger.error("error", error);
                 return "email_taken";
             }
-            console.error("Error signing up: ", error);
+            logger.error("Error signing up: ", error);
             return "unknown_error";
         }
 
         const { data: userData, error: userError } = await this.supabase.auth.getUser();
         if (!userData) {
-            console.error("SIGNUP ERROR getting user");
+            logger.error("SIGNUP ERROR getting user");
             return "unknown_error";
         }
         if (userError) {
-            console.error("SIGNUP ERROR getting user", userError);
+            logger.error("SIGNUP ERROR getting user", userError);
             return "unknown_error";
         }
 
@@ -88,7 +88,7 @@ export class AuthRepository {
         });
 
         if (insertUserError) {
-            console.error("Error creating user: ", insertUserError);
+            logger.error("Error creating user: ", insertUserError);
             return "unknown_error";
         }
 
@@ -96,7 +96,7 @@ export class AuthRepository {
 
 
         if (userInfoError || !userInfo) {
-            console.error("Error getting user: ", userInfoError);
+            logger.error("Error getting user: ", userInfoError);
             return null;
         }
         const user = userInfo[0];
@@ -108,7 +108,7 @@ export class AuthRepository {
         });
 
         if (userRoleError) {
-            console.error("Error creating user role: ", userRoleError);
+            logger.error("Error creating user role: ", userRoleError);
             return "unknown_error";
         }
         return null;

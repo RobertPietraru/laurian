@@ -3,8 +3,6 @@ import type { Actions } from './$types';
 
 export const actions: Actions = {
     default: async ({ locals, request, cookies }) => {
-        console.log('starting submission')
-        console.log('parsing form data')
         const data = await request.formData();
         const name = data.get('name')?.toString();
         const description = data.get('description')?.toString();

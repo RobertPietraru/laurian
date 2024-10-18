@@ -30,8 +30,6 @@
         for (let i = 0; i < fileList.length; i++) {
             _files.push(fileList[i]);
         }
-
-        console.log(_files);
         files = _files;
     };
 
@@ -43,8 +41,6 @@
         files.forEach((file, index) => {
             data.append(`file-${index}`, file);
         });
-
-        console.log(data);
         formLoading = true;
 
         const response = await fetch(event.currentTarget.action, {

@@ -4,14 +4,10 @@ import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { AuthRepository } from './lib/auth/repository'
+import { logger } from '$lib/stores/logger';
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
-
-
-
-
-
         cookies: {
             getAll: () => event.cookies.getAll(),
             setAll: (cookiesToSet) => {
@@ -52,7 +48,7 @@ const supabase: Handle = async ({ event, resolve }) => {
     })
 }
 
-const completelyUnprotectedRoutes = ['/login', '/register', '/discover', '/about'];
+const completelyUnprotectedRoutes = ['/login', '/register', '/discover', '/about', '/club'];
 const authGuard: Handle = async ({ event, resolve }) => {
     const { session, user } = await event.locals.safeGetSession()
     event.locals.session = session
@@ -69,6 +65,18 @@ const authGuard: Handle = async ({ event, resolve }) => {
                 return resolve(event);
             }
         }
+        logger.info('Auth guard: redirecting to login')
+        throw redirect(303, '/login')
+    }
+
+    return resolve(event)
+}
+const adminGuard: Handle = async ({ event, resolve }) => {
+    if (event.url.pathname == '/') {
+        return resolve(event);
+    }
+    if (event.locals.user?.role !== "admin" && event.url.pathname.startsWith('/admin')) {
+        logger.info('Admin guard: redirecting to login')
         throw redirect(303, '/login')
     }
 

@@ -4,9 +4,8 @@ export const load = (async ({ locals }) => {
     const { data: { session } } = await locals.supabase.auth.getSession();
 
     if (session) {
-        throw redirect(303, '/admin/dashboard');
+        throw redirect(303, '/discover');
     }
-
     return {};
 });
 
