@@ -1,5 +1,6 @@
 import { fail, redirect, error } from '@sveltejs/kit';
 import type { Actions } from './$types';
+import { logger } from '$lib/stores/logger';
 
 export const load = async ({ params, locals }) => {
 
@@ -17,7 +18,7 @@ export const load = async ({ params, locals }) => {
 
 export const actions: Actions = {
     update: async ({ locals, request, params }) => {
-        console.log('Updating club:', params.id);
+        logger.info('Updating club:', params.id);
         const data = await request.formData();
         const name = data.get('name')?.toString();
         const description = data.get('description')?.toString();
@@ -25,7 +26,7 @@ export const actions: Actions = {
         /// make sure fields are not empty
 
         if (!name || !description || !memberCount) {
-            console.log('Missing fields:', name, description, memberCount);
+            logger.info(`Failed Updating club: ${params.id} because one of the fields is missing: `, name, description, memberCount);
             return fail(400, { message: 'Toate campurile sunt obligatorii' });
         }
 
@@ -35,11 +36,10 @@ export const actions: Actions = {
             description: description,
             memberCount: memberCount
         });
-        console.log('Error:', err);
         if (err) {
             return fail(500, { message: 'Eroare la salvarea datelor' });
         }
-        console.log('Club updated successfully');
+        logger.info(`Club ${params.id} was updated`);
         return { success: true };
 
 

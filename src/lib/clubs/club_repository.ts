@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import * as models from "./models";
 import * as dtos from "./dtos";
+import { logger } from '$lib/stores/logger';
 
 
 export class ClubRepository {
@@ -24,7 +25,7 @@ export class ClubRepository {
             if (supabaseError.code === 'PGRST116') {
                 return "not_found";
             }
-            console.error('Error fetching club:', supabaseError);
+            logger.error('Error fetching club:', supabaseError);
             return null;
         }
         return models.clubFromJson(club, this.supabaseUrl);
@@ -38,7 +39,7 @@ export class ClubRepository {
             .limit(50);
 
         if (error) {
-            console.error('Error fetching clubs:', error);
+            logger.error('Error fetching clubs:', error);
             return null;
         }
         return clubs.map(club => models.clubFromJson(club, this.supabaseUrl));
@@ -46,7 +47,7 @@ export class ClubRepository {
 
     async createClub(params: dtos.CreateClubParams): Promise<string | null> {
         try {
-            console.log('creating record')
+            logger.info('creating record')
             const { data: clubRecord, error } = await this.supabase
                 .from('clubs')
                 .insert({
@@ -62,7 +63,7 @@ export class ClubRepository {
             if (error) throw error;
             const clubRecordId = clubRecord.id
 
-            console.log('Created club record');
+            logger.info('Created club record');
 
             // Upload files to storage
             for (const file of params.files) {
@@ -71,17 +72,17 @@ export class ClubRepository {
                     .upload(`${clubRecordId}/${file.name}`, file);
 
                 if (uploadError) {
-                    console.error('Error uploading file:', uploadError);
+                    logger.error('Error uploading file:', uploadError);
                     // You might want to handle this error, perhaps by deleting the club record
                     // and returning a failure response
                 }
             }
 
-            console.log('Uploaded files');
+            logger.info('Uploaded files');
 
             return clubRecordId;
         } catch (error) {
-            console.log('Error creating club:', error);
+            logger.info('Error creating club:', error);
             return null;
         }
     }
@@ -98,26 +99,26 @@ export class ClubRepository {
                 .eq('id', params.id);
 
             if (updateError) {
-                console.error('Supabase Error updating club:', updateError);
+                logger.error('Supabase Error updating club:', updateError);
                 return 'unknown';
             }
 
             return null;
         } catch (error) {
-            console.error('Unknown Error updating club:', error);
+            logger.error('Unknown Error updating club:', error);
             return 'unknown';
         }
     }
 
     async deleteClub(id: string): Promise<'unknown' | null> {
-        console.log('Deleting club:', id);
+        logger.info('Deleting club:', id);
         const { error: deleteError } = await this.supabase
             .from('clubs')
             .delete()
             .eq('id', id);
 
         if (deleteError) {
-            console.error('Error deleting club:', deleteError);
+            logger.error('Error deleting club:', deleteError);
             return 'unknown';
         }
         // delete files from storage
@@ -127,7 +128,7 @@ export class ClubRepository {
             .remove([`${id}/*`]);
 
         if (deleteFilesError) {
-            console.error('Error deleting files:', deleteFilesError);
+            logger.error('Error deleting files:', deleteFilesError);
             return 'unknown';
         }
 

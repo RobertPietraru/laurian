@@ -36,18 +36,6 @@
         applyAction(result);
     }
 
-    const handleFileChange = (event: Event) => {
-        const e = event?.target as any;
-        const fileList = e.files;
-        const _files = [...files];
-        for (let i = 0; i < fileList.length; i++) {
-            _files.push(fileList[i]);
-        }
-
-        console.log(_files);
-        files = _files;
-    };
-
     async function handleSubmit(event: {
         currentTarget: EventTarget & HTMLFormElement;
     }) {
@@ -57,7 +45,6 @@
             formData.append(`file-${index}`, file);
         });
 
-        console.log(formData);
         formLoading = true;
 
         const response = await fetch(event.currentTarget.action, {

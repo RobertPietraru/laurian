@@ -4,7 +4,6 @@ import { env } from '$env/dynamic/private'
 export const load: LayoutServerLoad = async ({ locals , cookies }) => {
   const { session } = await locals.safeGetSession()
   const user = locals.user;
-  console.log(user);
 
   const isAdmin = user?.role === 'admin';
   return {

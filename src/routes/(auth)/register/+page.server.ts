@@ -1,10 +1,11 @@
+import { logger } from '$lib/stores/logger';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load = (async ({ locals }) => {
     const { data: { session } } = await locals.supabase.auth.getSession();
 
     if (session) {
-        throw redirect(303, '/admin/dashboard');
+        throw redirect(303, '/discover');
     }
 
     return {};
@@ -29,7 +30,6 @@ export const actions = {
 
         const error = await locals.authRepository.signUp(email, password, name);
 
-        console.log(error);
         if (error) {
             if (error === "email_taken") {
                 return fail(400, { message: "Adresa de email este deja înregistrată", email: email });

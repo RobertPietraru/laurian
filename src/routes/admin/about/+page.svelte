@@ -8,7 +8,6 @@
 
     function handleSubmit() {
         // TODO: Implement submission logic to update the about page content
-        console.log('Submitting about page content:', aboutContent);
     }
 </script>
 
