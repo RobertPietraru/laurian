@@ -4,8 +4,12 @@
 
     import { Plus, User } from "lucide-svelte";
     import * as Card from "$lib/components/ui/card";
+    import { onMount } from "svelte";
 
     export let data: PageData;
+    onMount(() => {
+        console.log(data.clubs);
+    });
 </script>
 
 <main class="p-8 bg-gradient-to-br min-h-screen">

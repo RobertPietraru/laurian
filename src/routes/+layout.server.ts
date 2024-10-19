@@ -3,7 +3,6 @@ import { env } from '$env/dynamic/private'
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const user = locals.user;
-  console.log(user);
 
   return {
     user,

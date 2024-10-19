@@ -11,6 +11,7 @@
     import { Checkbox } from "$lib/components/ui/checkbox";
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
+    import { logger } from "$lib/stores/logger.js";
 
     export let data;
 
@@ -55,7 +56,7 @@
                 toast.error("A apărut o eroare la actualizarea permisiunilor");
             }
         } catch (error) {
-            console.error(error);
+            logger.error(`Error updating club permissions: ${error}`);
             toast.error("A apărut o eroare la actualizarea permisiunilor");
         } finally {
             isLoading = false;

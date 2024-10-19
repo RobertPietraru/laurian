@@ -3,6 +3,7 @@ import { logger } from "$lib/stores/logger";
 import { type AppUser } from "$lib/features/auth/models";
 import type { ClubEditorDto } from "../clubs/dtos";
 import type { AdminClub } from "./models";
+import type { Club } from "../clubs/models";
 
 export class AdminRepository {
     constructor(private readonly supabase: SupabaseClient) {
@@ -42,17 +43,18 @@ export class AdminRepository {
         try {
             parsedUserId = parseInt(userId);
         } catch (error) {
-            console.error('Error parsing user ID:', error);
+            logger.error(`Error parsing user ID: ${error}`);
             return 'user_not_found';
         }
         const { error } = await this.supabase.from('club_editors').upsert(
             clubIds.map((clubId) => ({
+                id: parsedUserId.toString() + clubId,
                 user: parsedUserId,
                 club: clubId
-            } satisfies Partial<ClubEditorDto>)),
+            })),
         );
         if (error) {
-            logger.error("Error assigning editor to clubs: ", error);
+            logger.error(`Error assigning editor to clubs: ${error}`);
             return 'unknown';
         }
         return null;
@@ -62,12 +64,12 @@ export class AdminRepository {
         try {
             parsedUserId = parseInt(userId);
         } catch (error) {
-            console.error('Error parsing user ID:', error);
+            logger.error(`Error parsing user ID: ${error}`);
             return 'user_not_found';
         }
         const { error } = await this.supabase.from('club_editors').delete().in('club', clubIds).eq('user', parsedUserId);
         if (error) {
-            logger.error("Error removing editor from clubs: ", error);
+            logger.error(`Error removing editor from clubs: ${error}`);
             return 'unknown';
         }
         return null;
@@ -76,20 +78,21 @@ export class AdminRepository {
     async makeModerator(userId: string): Promise<'unknown' | null> {
         const { error } = await this.supabase.from('users').update({ role: 3 }).eq('id', userId);
         if (error) {
-            logger.error("Error making moderator: ", error);
+            logger.error(`Error making moderator: ${error}`);
             return 'unknown';
         }
         return null;
     }
+
     async removeModerator(userId: string): Promise<'unknown' | null> {
         const { error } = await this.supabase.from('users').update({ role: 2 }).eq('id', userId);
         if (error) {
-            logger.error("Error removing moderator: ", error);
+            logger.error(`Error removing moderator: ${error}`);
             return 'unknown';
         }
         const { error: error2 } = await this.supabase.from('club_editors').delete().eq('user', userId);
         if (error2) {
-            logger.error("Error removing editor from clubs: ", error2);
+            logger.error(`Error removing editor from clubs: ${error2}`);
             return 'unknown';
         }
         return null;
@@ -104,7 +107,7 @@ export class AdminRepository {
         const { data, error } = await this.supabase.from('users').select('*, roles!inner(*)').range((page - 1) * pageSize, page * pageSize);
 
         if (error) {
-            logger.error("Error getting users: ", error);
+            logger.error(`Error getting users: ${error}`);
             return null;
         }
         return { users: data.map((user) => ({ ...user, role: user.roles.name })) as AppUser[], index: (page - 1) * pageSize, lastIndex: page * pageSize + data.length, total: data.length, usersLeft: 0 };

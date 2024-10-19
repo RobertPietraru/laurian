@@ -1,3 +1,4 @@
+import { logger } from '$lib/stores/logger.js';
 import { error, redirect } from '@sveltejs/kit';
 export const load = async ({ params, locals }) => {
     const userId = params.id;
@@ -31,7 +32,7 @@ export const actions = {
             parsedSelectedClubIds = JSON.parse(selectedClubIds as string);
             parsedClubIds = JSON.parse(clubIds as string);
         } catch (error) {
-            console.error('Error parsing selected club IDs:', error);
+            logger.error(`Error parsing selected club IDs: ${error}`);
             return { success: false, message: 'Invalid selected club IDs' };
         }
 
@@ -50,7 +51,6 @@ export const actions = {
             return error(404, 'User not found');
         }
 
-        console.log(selectedClubIds, clubIds);
         return { success: true, message: 'Club moderation updated' };
     }
 };

@@ -28,10 +28,24 @@ export class ClubRepository {
             if (supabaseError.code === 'PGRST116') {
                 return "not_found";
             }
-            logger.error('Error fetching club:', supabaseError);
+            logger.error(`Error fetching club: ${supabaseError}`);
             return null;
         }
         return models.clubFromJson(club, this.supabaseUrl);
+    }
+    async getClubsForEditor(editorId: string): Promise<models.Club[] | null> {
+        const { data, error } = await this.supabase.from('club_editors').select('*').eq('user', editorId);
+        if (error) {
+            logger.error("Error getting clubs for editor: ", error);
+            return null;
+        }
+        // get clubs
+        const { data: clubs, error: clubsError } = await this.supabase.from('clubs').select('*').in('id', data.map((club) => club.club));
+        if (clubsError) {
+            logger.error("Error getting clubs for editor: ", clubsError);
+            return null;
+        }
+        return clubs.map((club) => models.clubFromJson(club, this.supabaseUrl));
     }
 
     async getClubs(page: number, batch: number): Promise<models.Club[] | null> {
@@ -58,7 +72,7 @@ export class ClubRepository {
                     description: params.description,
                     name: params.name,
                     memberCount: params.memberCount,
-                    files: params.files.map(file => file.name), 
+                    files: params.files.map(file => file.name),
                 } satisfies CreateClubDto)
                 .select()
                 .single<ClubDto>();
