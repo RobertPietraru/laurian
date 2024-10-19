@@ -2,6 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import * as models from "./models";
 import * as dtos from "./dtos";
 import { logger } from '$lib/stores/logger';
+import type { ClubDto } from "./dtos";
+
+
 
 
 export class ClubRepository {
@@ -18,7 +21,7 @@ export class ClubRepository {
             .from('clubs')
             .select('*')
             .eq('id', id)
-            .single();
+            .single<ClubDto>();
 
         if (supabaseError) {
             // if the error is a 404, return "not_found"
@@ -36,7 +39,7 @@ export class ClubRepository {
             .from('clubs')
             .select('*')
             .order('created', { ascending: false })
-            .limit(50);
+            .limit(50).returns<ClubDto[]>();
 
         if (error) {
             logger.error('Error fetching clubs:', error);
@@ -58,18 +61,16 @@ export class ClubRepository {
                     files: params.files.map(file => file.name)  // Store file names in the database
                 })
                 .select()
-                .single();
+                .single<ClubDto>();
 
             if (error) throw error;
-            const clubRecordId = clubRecord.id
-
             logger.info('Created club record');
 
             // Upload files to storage
             for (const file of params.files) {
                 const { error: uploadError } = await this.supabase.storage
                     .from('laurianbucket')
-                    .upload(`${clubRecordId}/${file.name}`, file);
+                    .upload(`${clubRecord.id}/${file.name}`, file);
 
                 if (uploadError) {
                     logger.error('Error uploading file:', uploadError);
@@ -77,10 +78,8 @@ export class ClubRepository {
                     // and returning a failure response
                 }
             }
-
             logger.info('Uploaded files');
-
-            return clubRecordId;
+            return clubRecord.id;
         } catch (error) {
             logger.info('Error creating club:', error);
             return null;

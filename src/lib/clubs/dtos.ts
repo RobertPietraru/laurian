@@ -1,3 +1,4 @@
+import type { types } from "$lib/types";
 export interface UpdateClubParams {
     id: string;
     name: string;
@@ -10,3 +11,5 @@ export interface CreateClubParams {
     memberCount: number;
     files: File[];
 }
+
+export type ClubDto = types.Tables<'clubs'>;
