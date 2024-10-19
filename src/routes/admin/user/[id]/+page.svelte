@@ -64,42 +64,47 @@
 </script>
 
 <main class="h-[100vh] p-8">
-    <h2 class="text-2xl font-bold mb-4">
-        Editeaza permisiunile de club pentru {data.user.name} ({data.user.email})
-    </h2>
+    {#if data.user.role === "moderator"}
+        <h2 class="text-2xl font-bold mb-4">
+            Editeaza permisiunile de club pentru {data.user.name} ({data.user
+                .email})
+        </h2>
 
-    <Table>
-        <TableHeader>
-            <TableRow>
-                <TableHead>ID Club</TableHead>
-                <TableHead>Nume Club</TableHead>
-                <TableHead>Este editor</TableHead>
-            </TableRow>
-        </TableHeader>
-        <TableBody>
-            {#each data.clubs as club}
+        <Table>
+            <TableHeader>
                 <TableRow>
-                    <TableCell class="w-1/5">{club.id}</TableCell>
-                    <TableCell>{club.name}</TableCell>
-                    <TableCell>
-                        <Checkbox
-                            checked={selectedClubIds.includes(club.id)}
-                            onCheckedChange={() =>
-                                handleCheckboxChange(club.id)}
-                        />
-                    </TableCell>
+                    <TableHead>ID Club</TableHead>
+                    <TableHead>Nume Club</TableHead>
+                    <TableHead>Este editor</TableHead>
                 </TableRow>
-            {/each}
-        </TableBody>
-    </Table>
+            </TableHeader>
+            <TableBody>
+                {#each data.clubs as club}
+                    <TableRow>
+                        <TableCell class="w-1/5">{club.id}</TableCell>
+                        <TableCell>{club.name}</TableCell>
+                        <TableCell>
+                            <Checkbox
+                                checked={selectedClubIds.includes(club.id)}
+                                onCheckedChange={() =>
+                                    handleCheckboxChange(club.id)}
+                            />
+                        </TableCell>
+                    </TableRow>
+                {/each}
+            </TableBody>
+        </Table>
+    {/if}
 </main>
 
-<div class="fixed bottom-4 flex justify-center w-full">
-    <Button on:click={handleSubmit} disabled={isLoading}>
-        {#if isLoading}
-            Updating...
-        {:else}
-            Update Club Permissions
-        {/if}
-    </Button>
-</div>
+{#if data.user.role === "moderator"}
+    <div class="fixed bottom-4 flex justify-center w-full">
+        <Button on:click={handleSubmit} disabled={isLoading}>
+            {#if isLoading}
+                Updating...
+            {:else}
+                Update Club Permissions
+            {/if}
+        </Button>
+    </div>
+{/if}

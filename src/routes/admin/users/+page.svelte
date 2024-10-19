@@ -36,7 +36,7 @@
                         <input type="hidden" name="userId" value={user.id}>
                         <Button type="submit" variant="default">Retrage moderator</Button>
                     </form>
-                    <a href="/admin/clubs/user/{user.id}">
+                    <a href="/admin/user/{user.id}">
                         <Button>Modifica cluburi la care e editor</Button>
                     </a>
                 {/if}
