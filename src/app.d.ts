@@ -1,7 +1,7 @@
 import type { Session, SupabaseClient  } from '@supabase/supabase-js'
-import type { ClubRepository } from './lib/clubs/club_repository'
-import type { AuthRepository } from './lib/auth/repository'
-import type { AppUser } from './lib/auth/models'
+import type { ClubRepository } from './lib/features/clubs/club_repository'
+import type { AuthRepository } from './lib/features/auth/repository'
+import type { AppUser } from './lib/features/auth/models'
 
 declare global {
   namespace App {

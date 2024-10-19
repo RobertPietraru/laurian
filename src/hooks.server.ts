@@ -1,9 +1,9 @@
 import { env } from '$env/dynamic/private'
-import { ClubRepository } from '$lib/clubs/club_repository'
+import { ClubRepository } from '$lib/features/clubs/club_repository'
 import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-import { AuthRepository } from './lib/auth/repository'
+import { AuthRepository } from './lib/features/auth/repository'
 import { logger } from '$lib/stores/logger';
 
 const supabase: Handle = async ({ event, resolve }) => {
