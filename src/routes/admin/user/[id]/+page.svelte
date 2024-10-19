@@ -63,17 +63,17 @@
     }
 </script>
 
-<main class="h-[100vh]">
+<main class="h-[100vh] p-8">
     <h2 class="text-2xl font-bold mb-4">
-        Edit Club Permissions for {data.user.name}
+        Editeaza permisiunile de club pentru {data.user.name} ({data.user.email})
     </h2>
 
     <Table>
         <TableHeader>
             <TableRow>
-                <TableHead>Club ID</TableHead>
-                <TableHead>Club Name</TableHead>
-                <TableHead>Is Editor</TableHead>
+                <TableHead>ID Club</TableHead>
+                <TableHead>Nume Club</TableHead>
+                <TableHead>Este editor</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
