@@ -14,6 +14,7 @@
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
     import * as Card from "$lib/components/ui/card";
+    import type { ActionData } from "./$types.js";
 
     let files: File[] = [];
     let name = "";
@@ -60,10 +61,13 @@
     }
 
     let formLoading = false;
+    export let data;
+    export let form ;
 </script>
 
 <div class="px-4 py-12 sm:px-6 lg:px-8 min-h-[100vh]">
     <div class="flex flex-col lg:flex-row gap-[10%]">
+
         <form
             method="post"
             enctype="multipart/form-data"
@@ -166,6 +170,9 @@
                 {/if}
             </div>
 
+            {#if form && form.message}
+            <p class="text-red-500">{form.message}</p>
+            {/if}
             <div class="mt-4 flex justify-end">
                 <Button
                     type="submit"
@@ -177,6 +184,7 @@
                     Creează Club
                 </Button>
             </div>
+            
         </form>
 
         <article class="markdown-content w-full lg:w-1/2 xl:w-2/3">

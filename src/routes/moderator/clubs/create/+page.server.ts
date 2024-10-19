@@ -8,7 +8,7 @@ export const actions: Actions = {
         const description = data.get('description')?.toString();
         const memberCount = parseInt(data.get('memberCount')?.toString() || '0');
         const files = [];
-        if (!name || !description || !memberCount) {
+        if (!name || !description || memberCount === null || memberCount === undefined) {
             return fail(400, { message: 'Toate campurile sunt obligatorii' });
         }
 

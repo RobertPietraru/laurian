@@ -67,6 +67,10 @@ O lista cu toate cluburile din laurian
 
 Suntem deschiși contribuțiilor! Dacă doriți să contribuiți la acest proiect, vă rugăm să creați un pull request cu modificările propuse.
 
+## Typescript types generation
+
+npx supabase gen types --lang=typescript --project-id "$reference" --schema public > src/lib/types/database.types.ts
+
 ## Licență
 
 Acest proiect este licențiat sub [GNU Affero General Public License v3.0](LICENSE).

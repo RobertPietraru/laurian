@@ -1,14 +1,17 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from "@sveltejs/kit";
 
 export const load = async ({ locals }) => {
-    console.log('loading dashboard page');
+    const user = await locals.authRepository.getUser();
 
-    const clubs = await locals.clubRepository.getClubs(1, 10);
-    if (clubs === null) {
-        return error(500, { message: 'O eroare necunoscuta a aparut' });
+    if (user == null || user.role !== 'moderator') {
+        throw redirect(302, '/discover');
     }
-
+    const clubs = await locals.clubRepository.getClubsForEditor(user.id);
+    if (clubs == null) {
+        return error(500, "Ceva nu a mers bine");
+    }
     return {
+        user,
         clubs
-    };
+    }
 };

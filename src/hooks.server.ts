@@ -1,10 +1,11 @@
 import { env } from '$env/dynamic/private'
-import { ClubRepository } from '$lib/clubs/club_repository'
+import { ClubRepository } from '$lib/features/clubs/club_repository'
 import { createServerClient } from '@supabase/ssr'
 import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-import { AuthRepository } from './lib/auth/repository'
+import { AuthRepository } from './lib/features/auth/repository'
 import { logger } from '$lib/stores/logger';
+import { AdminRepository } from '$lib/features/admin/repository'
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
@@ -40,7 +41,6 @@ const supabase: Handle = async ({ event, resolve }) => {
     }
     event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.SUPABASE_URL);
     event.locals.authRepository = new AuthRepository(event.locals.supabase);
-
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
             return name === 'content-range' || name === 'x-supabase-api-version'
@@ -59,6 +59,12 @@ const authGuard: Handle = async ({ event, resolve }) => {
         return resolve(event);
     }
 
+
+    if (event.locals.user?.role === 'admin') {
+        event.locals.adminRepository = new AdminRepository(event.locals.supabase);
+    } else {
+        event.locals.adminRepository = null;
+    }
     if (!event.locals.session) {
         for (const route of completelyUnprotectedRoutes) {
             if (event.url.pathname.startsWith(route)) {
@@ -69,10 +75,10 @@ const authGuard: Handle = async ({ event, resolve }) => {
         throw redirect(303, '/login')
     }
 
+
     return resolve(event)
 }
 const moderatorGuard: Handle = async ({ event, resolve }) => {
-    console.log('moderator guard')
     if (event.url.pathname == '/') {
         return resolve(event);
     }
@@ -80,23 +86,21 @@ const moderatorGuard: Handle = async ({ event, resolve }) => {
         logger.info('Moderator guard: redirecting to login')
         throw redirect(303, '/login')
     }
-    console.log('resolving');
 
     return resolve(event)
 }
 
-const maintenanceGuard: Handle = async ({ event, resolve }) => {
-    if (env.MAINTENANCE_MODE === 'true') {
-        if (event.url.pathname == '/maintenance') {
-            return resolve(event);
-        }
-        throw redirect(303, '/maintenance')
-    } else {
-        if (event.url.pathname == '/maintenance') {
-            throw redirect(303, '/')
-        }
+const adminGuard: Handle = async ({ event, resolve }) => {
+    if (event.url.pathname == '/') {
+        return resolve(event);
     }
+    if (event.locals.user?.role !== "admin" && event.url.pathname.startsWith('/admin')) {
+        logger.info('Admin guard: redirecting to login')
+        throw redirect(303, '/login')
+    }
+
     return resolve(event)
 }
 
-export const handle: Handle = sequence(supabase, authGuard, moderatorGuard)
+
+export const handle: Handle = sequence(supabase, authGuard, moderatorGuard, adminGuard)

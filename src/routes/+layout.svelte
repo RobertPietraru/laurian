@@ -19,13 +19,15 @@
     $: ({ session, supabase } = data);
 
     onMount(() => {
-        const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-            if (newSession?.expires_at !== session?.expires_at) {
-                invalidate("supabase:auth");
-            }
-        });
+        const { data: dt } = supabase.auth.onAuthStateChange(
+            (_, newSession) => {
+                if (newSession?.expires_at !== session?.expires_at) {
+                    invalidate("supabase:auth");
+                }
+            },
+        );
 
-        return () => data.subscription.unsubscribe();
+        return () => dt.subscription.unsubscribe();
     });
 
     async function logout() {
@@ -92,9 +94,9 @@
             </Popover.Trigger>
             <Popover.Content class="w-48">
                 <div class="flex flex-col gap-2">
-                    {#if data.isAdmin}
+                    {#if data.user?.role === "moderator" || data.user?.role === "admin"}
                         <a
-                            href="/moderator/dashboard"
+                            href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
                             class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                         >
                             <LayoutDashboard class="h-4 w-4" />
@@ -159,13 +161,15 @@
                     Despre
                 </a>
 
-                {#if data.isAdmin === true}
+                {#if data.user?.role === "moderator" || data.user?.role === "admin"}
                     <a
-                        href="/moderator/dashboard"
+                        href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
                         class="text-muted-foreground hover:text-foreground"
                     >
                         Dashboard
                     </a>
+                {/if}
+                {#if data.user}
                     <Button
                         on:click={logout}
                         variant="ghost"
