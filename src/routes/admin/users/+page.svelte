@@ -1,0 +1,54 @@
+<script lang="ts">
+    import { Button } from "$lib/components/ui/button";
+    import {
+        Card,
+        CardContent,
+        CardHeader,
+        CardTitle,
+    } from "$lib/components/ui/card";
+    import type { AppUser } from "$lib/features/auth/models";
+
+    export let data;
+</script>
+
+<div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4"
+>
+    {#each data.users as user}
+        <Card>
+            <CardHeader>
+                <CardTitle>{user.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p class="text-md">{user.email}</p>
+                <p class="text-sm text-muted-foreground mb-4">
+                    Role: {user.role}
+                </p>
+                {#if user.role === "user"}
+                    <Button variant="default">Fa-l moderator</Button>
+                {/if}
+
+                {#if user.role === "moderator"}
+                    <Button variant="default">Atribuie club</Button>
+                {/if}
+
+                {#if user.role === "admin"}
+                    <h1>!ADMIN!</h1>
+                {/if}
+            </CardContent>
+        </Card>
+    {/each}
+</div>
+
+<div class="flex justify-center mt-4 space-x-4">
+    {#if data.index > 1}
+        <Button href={`/admin/users?page=${data.index - 1}`}>
+            Previous Page
+        </Button>
+    {/if}
+    {#if data.lastIndex < data.total}
+        <Button href={`/admin/users?page=${data.lastIndex + 1}`}>
+            Next Page
+        </Button>
+    {/if}
+</div>

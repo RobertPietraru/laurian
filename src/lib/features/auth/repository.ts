@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AppUser, AppUserRole } from "./models";
+import { userRoles, type AppUser, type AppUserRole } from "./models";
 
 import { logger } from '$lib/stores/logger';
 
@@ -32,26 +32,19 @@ export class AuthRepository {
             return null;
         }
         const authUser = data.user;
-        const { data: userData, error: userError } = await this.supabase.from("users").select("*").eq("auth", authUser.id);
+        const { data: userData, error: userError } = await this.supabase.from("users").select('*, roles!inner(*)').eq("auth", authUser.id);
 
-        if (userError || userData.length == 0) {
+        if (userError || userData.length == 0 || !userData[0].roles) {
             logger.error("Error getting user: ", userError);
             return null;
         }
-        const user = userData[0] as Partial<AppUser>;
-        const { data: roleData, error: roleError } = await this.supabase.from("user_roles").select("*").eq("user", user.id);
-        if (roleError) {
+        const role = userData[0]?.roles?.name;
+        if (!userRoles.includes(role)) {
+            logger.error("User role not found: ", role);
             return null;
         }
-        const role = roleData[0].role as number;
-        if (role == 1) {
-            user.role = 'admin' satisfies AppUserRole;
-        } else if (role == 2) {
-            user.role = 'user' satisfies AppUserRole;
-        } else if (role == 3) {
-            user.role = 'moderator' satisfies AppUserRole;
-        }
-
+        userData[0].role = role as AppUserRole;
+        const user = userData[0] as Partial<AppUser>;
         return user as AppUser;
     }
     async signUp(email: string, password: string, name: string): Promise<"email_taken" | "unknown_error" | null> {

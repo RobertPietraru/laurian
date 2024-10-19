@@ -1,5 +1,5 @@
 
- const  userRoles =  ["admin" , "moderator" , "user"] as const;
+export const  userRoles =  ["admin" , "moderator" , "user"] as const;
  export type AppUserRole = typeof userRoles[number];
 
 export interface AppUser {
