@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import * as models from "./models";
 import * as dtos from "./dtos";
 import { logger } from '$lib/stores/logger';
-import type { ClubDto } from "./dtos";
+import type { ClubDto, CreateClubDto } from "./dtos";
 
 
 
@@ -58,8 +58,8 @@ export class ClubRepository {
                     description: params.description,
                     name: params.name,
                     memberCount: params.memberCount,
-                    files: params.files.map(file => file.name)  // Store file names in the database
-                })
+                    files: params.files.map(file => file.name), 
+                } satisfies CreateClubDto)
                 .select()
                 .single<ClubDto>();
 

@@ -13,3 +13,4 @@ export interface CreateClubParams {
 }
 
 export type ClubDto = types.Tables<'clubs'>;
+export type CreateClubDto = Omit<ClubDto, "created">;
