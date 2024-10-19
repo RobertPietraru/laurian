@@ -19,11 +19,13 @@
     $: ({ session, supabase } = data);
 
     onMount(() => {
-        const { data: dt } = supabase.auth.onAuthStateChange((_, newSession) => {
-            if (newSession?.expires_at !== session?.expires_at) {
-                invalidate("supabase:auth");
-            }
-        });
+        const { data: dt } = supabase.auth.onAuthStateChange(
+            (_, newSession) => {
+                if (newSession?.expires_at !== session?.expires_at) {
+                    invalidate("supabase:auth");
+                }
+            },
+        );
 
         return () => dt.subscription.unsubscribe();
     });
@@ -159,14 +161,15 @@
                     Despre
                 </a>
 
-
-                {#if data.user?.role === "moderator" || data.user?.role === "admin" }
+                {#if data.user?.role === "moderator" || data.user?.role === "admin"}
                     <a
                         href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
                         class="text-muted-foreground hover:text-foreground"
                     >
                         Dashboard
                     </a>
+                {/if}
+                {#if data.user}
                     <Button
                         on:click={logout}
                         variant="ghost"

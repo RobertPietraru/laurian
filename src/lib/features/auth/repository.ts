@@ -78,32 +78,25 @@ export class AuthRepository {
         const { data, error: insertUserError } = await this.supabase.from("users").insert({
             name,
             auth: userData.user.id,
-        });
-
-        if (insertUserError) {
-            logger.error("Error creating user: ", insertUserError);
-            return "unknown_error";
-        }
-
-        const { data: userInfo, error: userInfoError } = await this.supabase.from("users").select("*").eq("auth", userData.user.id);
-
-
-        if (userInfoError || !userInfo) {
-            logger.error("Error getting user: ", userInfoError);
-            return null;
-        }
-        const user = userInfo[0];
-
-        /// create user_role entry
-        const { data: userRoleData, error: userRoleError } = await this.supabase.from("user_roles").insert({
-            user: (user as Partial<AppUser>).id,
+            email: userData.user.email,
             role: 2,
         });
 
-        if (userRoleError) {
-            logger.error("Error creating user role: ", userRoleError);
+        if (insertUserError) {
+            /// logout
+
+            logger.error(`Error creating user: ${insertUserError}`);
+            try {
+                
+            await this.supabase.auth.signOut();
+            } catch (error) {
+                logger.error(`Error signing out: ${error}`);
+                return "unknown_error";
+            }
+
             return "unknown_error";
         }
+
         return null;
     }
 }

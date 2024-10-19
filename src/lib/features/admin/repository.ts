@@ -8,7 +8,20 @@ export class AdminRepository {
     }
 
     async makeModerator(userId: string): Promise<'unknown' | null> {
-        return 'unknown';
+        const { data, error } = await this.supabase.from('users').update({ role: 3 }).eq('id', userId);
+        if (error) {
+            logger.error("Error making moderator: ", error);
+            return 'unknown';
+        }
+        return null;
+    }
+    async removeModerator(userId: string): Promise<'unknown' | null> {
+        const { data, error } = await this.supabase.from('users').update({ role: 2 }).eq('id', userId);
+        if (error) {
+            logger.error("Error removing moderator: ", error);
+            return 'unknown';
+        }
+        return null;
     }
     /**
      * Get all users with pagination
@@ -18,7 +31,6 @@ export class AdminRepository {
      */
     async getAllUsersWithPagination(page: number, pageSize: number): Promise<{ users: AppUser[], index: number, lastIndex: number, total: number, usersLeft: number } | null> {
         const { data, error} = await this.supabase.from('users').select('*, roles!inner(*)').range((page - 1) * pageSize, page * pageSize);
-        console.log(data);
 
         if (error) {
             logger.error("Error getting users: ", error);

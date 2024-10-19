@@ -25,11 +25,17 @@
                     Role: {user.role}
                 </p>
                 {#if user.role === "user"}
-                    <Button variant="default">Fa-l moderator</Button>
+                    <form action="?/makeModerator" method="POST">
+                        <input type="hidden" name="userId" value={user.id}>
+                        <Button type="submit" variant="default">Fa-l moderator</Button>
+                    </form>
                 {/if}
 
                 {#if user.role === "moderator"}
-                    <Button variant="default">Atribuie club</Button>
+                    <form action="?/removeModerator" method="POST">
+                        <input type="hidden" name="userId" value={user.id}>
+                        <Button type="submit" variant="default">Retrage moderator</Button>
+                    </form>
                 {/if}
 
                 {#if user.role === "admin"}
