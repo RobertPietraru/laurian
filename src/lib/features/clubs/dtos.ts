@@ -4,6 +4,9 @@ export interface UpdateClubParams {
     name: string;
     description: string;
     memberCount: number;
+    filesToUpload: File[];
+    filesLeft: string[];
+    initialFiles: string[];
 }
 export interface CreateClubParams {
     name: string;

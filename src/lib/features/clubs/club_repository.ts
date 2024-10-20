@@ -80,11 +80,12 @@ export class ClubRepository {
             if (error) throw error;
             logger.info(`Created club ${clubRecord.id}`);
 
+
             // Upload files to storage
             for (const file of params.files) {
                 const { error: uploadError } = await this.supabase.storage
                     .from('laurianbucket')
-                    .upload(`${clubRecord.id}/${file.name}`, file);
+                    .upload(`${clubRecord.id}/${crypto.randomUUID()}_${file.name}`, file);
 
                 if (uploadError) {
                     logger.error("Error uploading file: ", uploadError);
@@ -102,12 +103,39 @@ export class ClubRepository {
 
     async updateClub(params: dtos.UpdateClubParams): Promise<'unknown' | null> {
         try {
+            const initialFiles = params.initialFiles.map(file => file.split('/').pop() ).filter(file => file !== undefined);
+            const filesLeft = params.filesLeft.map(file => file.split('/').pop() ).filter(file => file !== undefined);
+            var deletionSuccess = true;
+            /// delete all files that are not in the initialFiles array
+            const filesToDelete = initialFiles.filter(file => !filesLeft.includes(file)).map(file => `${params.id}/${file}`);
+            if (filesToDelete.length > 0) {
+                const { error: deleteError } = await this.supabase.storage.from('laurianbucket').remove(filesToDelete);
+                if (deleteError) {
+                    deletionSuccess = false;
+                    logger.error("Error deleting files: ", deleteError);
+                }
+            }
+            const nameForFilesToUpload = params.filesToUpload.map(file => `${crypto.randomUUID()}_${file.name}`);
+            var namesOfSuccessfullyUploadedFiles: string[] = [];
+            /// upload all files that are in the filesToUpload array
+            if (params.filesToUpload.length > 0) {
+                for (const [index, file] of params.filesToUpload.entries()) {
+                    const { error: uploadError } = await this.supabase.storage.from('laurianbucket').upload(`${params.id}/${nameForFilesToUpload[index]}`, file);
+                    if (uploadError) {
+                        logger.error("Error uploading file: ", uploadError);
+                    } else {
+                        namesOfSuccessfullyUploadedFiles.push(nameForFilesToUpload[index]);
+                    }
+                }
+            }
+
             const { error: updateError } = await this.supabase
                 .from('clubs')
                 .update({
                     description: params.description,
                     name: params.name,
                     memberCount: params.memberCount,
+                    files: [...(deletionSuccess ? filesLeft : initialFiles), ...namesOfSuccessfullyUploadedFiles],
                 })
                 .eq('id', params.id);
 
@@ -115,6 +143,9 @@ export class ClubRepository {
                 logger.error('Supabase Error updating club:', updateError);
                 return 'unknown';
             }
+
+
+
 
             return null;
         } catch (error) {

@@ -8,6 +8,9 @@
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
     import { toast } from "svelte-sonner";
+    import { CloudUpload } from "lucide-svelte";
+    import { Trash2 } from "lucide-svelte";
+
     import {
         Alert,
         AlertDescription,
@@ -17,24 +20,43 @@
     export let data;
 
     let message: string | null = null;
-    let files: File[] = [];
+    let files: (File | string)[] = data.club.files;
     let name = data.club.name;
     let description = data.club.description;
     let memberCount = data.club.memberCount;
 
     $: markdownPreview = marked(description);
-    $: previewGallery = data.club.files;
+    $: previewGallery = files;
+
+    const handleFileChange = (event: Event) => {
+        const e = event?.target as any;
+        const fileList = e.files;
+        const _files = [...files];
+        for (let i = 0; i < fileList.length; i++) {
+            _files.push(fileList[i]);
+        }
+        files = _files;
+    };
 
     async function handleSubmit(event: {
         currentTarget: EventTarget & HTMLFormElement;
     }) {
         const formData = new FormData(event.currentTarget);
 
+        const filesToUpload: File[] = [];
+        const filesLeft: string[] = [];
         files.forEach((file, index) => {
-            formData.append(`file-${index}`, file);
+            if (file instanceof File) {
+                formData.append(`file-${index}`, file);
+            } else {
+                filesLeft.push(file);
+            }
         });
-
+        console.log(filesLeft);
+        console.log(filesToUpload);
         formLoading = true;
+        formData.set("filesLeft", JSON.stringify(filesLeft));
+        formData.set("initialFiles", JSON.stringify(data.club.files));
 
         const response = await fetch(event.currentTarget.action, {
             method: "POST",
@@ -64,12 +86,6 @@
 
 <div class="px-4 py-12 sm:px-6 lg:px-8 min-h-[100vh]">
     <div class="flex flex-col lg:flex-row gap-[10%]">
-        {#if message}
-            <Alert variant="destructive" class="mb-4">
-                <AlertTitle>Eroare</AlertTitle>
-                <AlertDescription>{message}</AlertDescription>
-            </Alert>
-        {/if}
         <form
             action="?/update"
             method="post"
@@ -77,6 +93,12 @@
             class="w-full lg:w-1/2 md:w-1/3"
             on:submit|preventDefault={handleSubmit}
         >
+            {#if message}
+                <Alert variant="destructive" class="mb-4">
+                    <AlertTitle>Eroare</AlertTitle>
+                    <AlertDescription>{message}</AlertDescription>
+                </Alert>
+            {/if}
             <h1 class="text-3xl font-bold tracking-tight">Editare Club</h1>
             <p class="my-3 text-lg text-muted-foreground">
                 Actualizați detaliile clubului.
@@ -118,6 +140,90 @@
                     on:input={resetMessage}
                 />
             </div>
+            <div class="mt-4">
+                <Label for="files">Imagini pentru Galerie</Label>
+
+                <div
+                    class="mt-1 flex justify-center rounded-md border-2 border-dashed border-muted px-6 pb-6 pt-5"
+                >
+                    <div class="space-y-1 text-center">
+                        <CloudUpload
+                            class="mx-auto h-12 w-12 text-muted-foreground"
+                        />
+                        <div class="flex text-sm text-muted-foreground">
+                            <label
+                                for="files"
+                                class="relative cursor-pointer rounded-md font-medium text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-accent"
+                            >
+                                <span>Încărcați imagini</span>
+                                <Input
+                                    id="files"
+                                    type="file"
+                                    multiple
+                                    accept=".jpg,.jpeg,.png"
+                                    class="sr-only"
+                                    on:change={handleFileChange}
+                                />
+                            </label>
+                            <p class="pl-1">sau trageți și plasați</p>
+                        </div>
+                        <p class="text-xs text-muted-foreground">
+                            Fișiere JPG și PNG de până la 10MB
+                        </p>
+                    </div>
+                </div>
+                {#if files.length > 0}
+                    <div class="mt-2 flex flex-col items-start justify-between">
+                        {#each files as file}
+                            {#if typeof file === "string"}
+                                <div
+                                    class="mt-2 flex w-full items-center justify-between rounded-lg bg-secondary p-2"
+                                >
+                                    <img
+                                        src={file}
+                                        alt={file.split("/").pop() || "Imagine"}
+                                        class="h-10 w-10 rounded-md object-cover"
+                                    />
+                                    <p class="ml-4 flex-1">
+                                        {file.split("/").pop() || "Imagine"}
+                                    </p>
+                                    <Button
+                                        variant="ghost"
+                                        on:click={() => {
+                                            files = files.filter(
+                                                (f) => f !== file,
+                                            );
+                                        }}
+                                    >
+                                        <Trash2 class="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            {:else}
+                                <div
+                                    class="mt-2 flex w-full items-center justify-between rounded-lg bg-secondary p-2"
+                                >
+                                    <img
+                                        src={URL.createObjectURL(file)}
+                                        alt={file.name}
+                                        class="h-10 w-10 rounded-md object-cover"
+                                    />
+                                    <p class="ml-4 flex-1">{file.name}</p>
+                                    <Button
+                                        variant="ghost"
+                                        on:click={() => {
+                                            files = files.filter(
+                                                (f) => f !== file,
+                                            );
+                                        }}
+                                    >
+                                        <Trash2 class="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            {/if}
+                        {/each}
+                    </div>
+                {/if}
+            </div>
 
             <div class="mt-4 flex justify-end gap-4">
                 <Button
@@ -157,20 +263,30 @@
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
                 >
                     {#each previewGallery as image, index}
-                        <div
-                            class="relative overflow-hidden rounded-xl group"
-                            class:col-span-2={index % 3 === 0 && index !== 0}
-                            class:row-span-2={index % 5 === 0 && index !== 0}
-                        >
+                        {#if typeof image === "string"}
+                            <div
+                                class="relative overflow-hidden rounded-xl group"
+                                class:col-span-2={index % 3 === 0 &&
+                                    index !== 0}
+                                class:row-span-2={index % 5 === 0 &&
+                                    index !== 0}
+                            >
+                                <img
+                                    src={image}
+                                    alt={`Imagine galerie ${index + 1}`}
+                                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center"
+                                ></div>
+                            </div>
+                        {:else}
                             <img
-                                src={image}
-                                alt={`Imagine galerie ${index + 1}`}
+                                src={URL.createObjectURL(image)}
+                                alt={image.name}
                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            <div
-                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center"
-                            ></div>
-                        </div>
+                        {/if}
                     {/each}
                 </div>
             </div>
