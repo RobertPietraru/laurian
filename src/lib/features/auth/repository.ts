@@ -54,11 +54,12 @@ export class AuthRepository {
         });
 
         if (error) {
-            if (error.status === 400) {
-                logger.error("error", error);
+            if (error.code === "user_already_exists") {
                 return "email_taken";
+            }
+            if (error.status === 400) {
+                return "unknown_error";
             } else if (error.status === 422) {
-                logger.error("error", error);
                 return "email_taken";
             }
             logger.error("Error signing up: ", error);
