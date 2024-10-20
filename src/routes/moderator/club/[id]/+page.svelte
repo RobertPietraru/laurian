@@ -8,7 +8,11 @@
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
     import { toast } from "svelte-sonner";
-    import { Alert, AlertDescription, AlertTitle } from "$lib/components/ui/alert/index.js";
+    import {
+        Alert,
+        AlertDescription,
+        AlertTitle,
+    } from "$lib/components/ui/alert/index.js";
 
     export let data;
 
@@ -20,16 +24,6 @@
 
     $: markdownPreview = marked(description);
     $: previewGallery = data.club.files;
-
-    async function handleDelete() {
-        const formData = new FormData();
-        const response = await fetch(`/moderator/club/${data.club.id}?/delete`, {
-            method: "POST",
-            body: formData,
-        });
-        const result: ActionResult = deserialize(await response.text());
-        applyAction(result);
-    }
 
     async function handleSubmit(event: {
         currentTarget: EventTarget & HTMLFormElement;
@@ -126,13 +120,6 @@
             </div>
 
             <div class="mt-4 flex justify-end gap-4">
-                <Button
-                    variant="destructive"
-                    type="button"
-                    on:click={handleDelete}
-                >
-                    Sterge Club
-                </Button>
                 <Button
                     type="submit"
                     class={"bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary" +

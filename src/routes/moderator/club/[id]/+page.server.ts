@@ -44,11 +44,4 @@ export const actions: Actions = {
 
 
     },
-    delete: async ({ locals, params }) => {
-        const err = await locals.clubRepository.deleteClub(params.id);
-        if (err) {
-            return fail(500, { message: 'Eroare la stergerea datelor' });
-        }
-        throw redirect(303, '/moderator/dashboard');
-    }
 };
