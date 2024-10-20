@@ -21,7 +21,7 @@
 
 <div class="h-full flex items-center justify-center min-h-[100vh]">
     <Card class="w-[350px] m-8">
-        <CardHeader class="mb-4">
+        <CardHeader>
             <CardTitle>Înregistrare</CardTitle>
         </CardHeader>
         <CardContent>
