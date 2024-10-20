@@ -86,12 +86,12 @@ export class AuthRepository {
         if (insertUserError) {
             /// logout
 
-            logger.error(`Error creating user: ${insertUserError}`);
+            logger.error("Error creating user: ", insertUserError);
             try {
                 
             await this.supabase.auth.signOut();
             } catch (error) {
-                logger.error(`Error signing out: ${error}`);
+                logger.error("Error signing out: ", error);
                 return "unknown_error";
             }
 

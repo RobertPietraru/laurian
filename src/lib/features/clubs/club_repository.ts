@@ -28,7 +28,7 @@ export class ClubRepository {
             if (supabaseError.code === 'PGRST116') {
                 return "not_found";
             }
-            logger.error(`Error fetching club: ${supabaseError}`);
+            logger.error("Error fetching club: ", supabaseError);
             return null;
         }
         return models.clubFromJson(club, this.supabaseUrl);
@@ -64,7 +64,7 @@ export class ClubRepository {
 
     async createClub(params: dtos.CreateClubParams): Promise<string | null> {
         try {
-            logger.info('creating record')
+            logger.info(`Creating club ${params.name}`);
             const { data: clubRecord, error } = await this.supabase
                 .from('clubs')
                 .insert({
@@ -78,7 +78,7 @@ export class ClubRepository {
                 .single<ClubDto>();
 
             if (error) throw error;
-            logger.info('Created club record');
+            logger.info(`Created club ${clubRecord.id}`);
 
             // Upload files to storage
             for (const file of params.files) {
@@ -87,15 +87,15 @@ export class ClubRepository {
                     .upload(`${clubRecord.id}/${file.name}`, file);
 
                 if (uploadError) {
-                    logger.error('Error uploading file:', uploadError);
+                    logger.error("Error uploading file: ", uploadError);
                     // You might want to handle this error, perhaps by deleting the club record
                     // and returning a failure response
                 }
             }
-            logger.info('Uploaded files');
+            logger.info(`Created club ${clubRecord.id}`);
             return clubRecord.id;
         } catch (error) {
-            logger.info('Error creating club:', error);
+            logger.error(`Error creating club ${params.name}: `, error);
             return null;
         }
     }
