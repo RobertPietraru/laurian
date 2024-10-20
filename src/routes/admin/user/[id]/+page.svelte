@@ -56,7 +56,7 @@
                 toast.error("A apărut o eroare la actualizarea permisiunilor");
             }
         } catch (error) {
-            logger.error(`Error updating club permissions: ${error}`);
+            logger.error(`Error updating club permissions for ${data.user.id}: `, error);
             toast.error("A apărut o eroare la actualizarea permisiunilor");
         } finally {
             isLoading = false;

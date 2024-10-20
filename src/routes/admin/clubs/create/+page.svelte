@@ -13,8 +13,7 @@
     import type { ActionResult } from "@sveltejs/kit";
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
-    import * as Card from "$lib/components/ui/card";
-    import type { ActionData } from "./$types.js";
+    import { Alert, AlertDescription, AlertTitle } from "$lib/components/ui/alert/index.js";
 
     let files: File[] = [];
     let name = "";
@@ -112,6 +111,7 @@
                     class="mt-1 block w-full"
                 />
             </div>
+
             <div class="mt-4">
                 <Label for="files">Imagini pentru Galerie</Label>
 
@@ -171,7 +171,10 @@
             </div>
 
             {#if form && form.message}
-            <p class="text-red-500">{form.message}</p>
+                <Alert variant="destructive" class="mt-4">    
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{form.message}</AlertDescription> 
+                </Alert>
             {/if}
             <div class="mt-4 flex justify-end">
                 <Button
