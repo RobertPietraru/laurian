@@ -1,23 +1,22 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
     import { Label } from "$lib/components/ui/label";
-    import {
-        CloudUpload,
-        Delete,
-        File as FileIcon,
-        Trash2,
-    } from "lucide-svelte";
     import { Input } from "$lib/components/ui/input";
     import { Textarea } from "$lib/components/ui/textarea";
-    import { applyAction, deserialize, enhance } from "$app/forms";
+    import { applyAction, deserialize } from "$app/forms";
     import type { ActionResult } from "@sveltejs/kit";
     import { invalidateAll } from "$app/navigation";
     import { marked } from "marked";
-    import * as Card from "$lib/components/ui/card";
     import { toast } from "svelte-sonner";
+    import {
+        Alert,
+        AlertDescription,
+        AlertTitle,
+    } from "$lib/components/ui/alert/index.js";
 
     export let data;
 
+    let message: string | null = null;
     let files: File[] = [];
     let name = data.club.name;
     let description = data.club.description;
@@ -25,16 +24,6 @@
 
     $: markdownPreview = marked(description);
     $: previewGallery = data.club.files;
-
-    async function handleDelete() {
-        const formData = new FormData();
-        const response = await fetch(`/moderator/club/${data.club.id}?/delete`, {
-            method: "POST",
-            body: formData,
-        });
-        const result: ActionResult = deserialize(await response.text());
-        applyAction(result);
-    }
 
     async function handleSubmit(event: {
         currentTarget: EventTarget & HTMLFormElement;
@@ -58,9 +47,16 @@
         if (result.type === "success") {
             toast.success("Club actualizat cu succes");
             await invalidateAll();
+        } else {
+            if (result.type === "failure") {
+                message = result.data?.message ?? null;
+            }
         }
-
         applyAction(result);
+    }
+
+    function resetMessage() {
+        message = null;
     }
 
     let formLoading = false;
@@ -68,6 +64,12 @@
 
 <div class="px-4 py-12 sm:px-6 lg:px-8 min-h-[100vh]">
     <div class="flex flex-col lg:flex-row gap-[10%]">
+        {#if message}
+            <Alert variant="destructive" class="mb-4">
+                <AlertTitle>Eroare</AlertTitle>
+                <AlertDescription>{message}</AlertDescription>
+            </Alert>
+        {/if}
         <form
             action="?/update"
             method="post"
@@ -87,6 +89,7 @@
                     type="text"
                     bind:value={name}
                     placeholder="Introduceți numele clubului"
+                    on:input={resetMessage}
                     class="mt-1 block w-full"
                 />
             </div>
@@ -99,6 +102,7 @@
                     rows={5}
                     placeholder="Descrieți clubul folosind Markdown"
                     class="mt-1 block w-full"
+                    on:input={resetMessage}
                 />
             </div>
             <div class="mt-4">
@@ -111,17 +115,11 @@
                     min="0"
                     placeholder="Introduceți numărul de membri"
                     class="mt-1 block w-full"
+                    on:input={resetMessage}
                 />
             </div>
 
             <div class="mt-4 flex justify-end gap-4">
-                <Button
-                    variant="destructive"
-                    type="button"
-                    on:click={handleDelete}
-                >
-                    Sterge Club
-                </Button>
                 <Button
                     type="submit"
                     class={"bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary" +
