@@ -25,7 +25,7 @@ export const actions: Actions = {
         const memberCount = parseInt(data.get('memberCount')?.toString() || '0');
         /// make sure fields are not empty
 
-        if (!name || !description || !memberCount) {
+        if (!name || !description || memberCount === null || memberCount === undefined) {
             logger.info(`Failed Updating club: ${params.id} because one of the fields is missing: `, name, description, memberCount);
             return fail(400, { message: 'Toate campurile sunt obligatorii' });
         }
