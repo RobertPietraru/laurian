@@ -3,6 +3,11 @@
     import * as Card from "$lib/components/ui/card";
     import User from "lucide-svelte/icons/user-round";
     import type { PageData } from './$types';
+    import { marked } from "marked";
+    function getText(rawMarkdown: string) {
+        const m = marked(rawMarkdown);
+        return m.length > 100 ? m.substring(0, 100).trim() + '...' : m;
+    }
 
     export let data: PageData;
 
@@ -39,7 +44,7 @@
                         {club.name}
                     </h4>
                     <p class="text-gray-600 mb-4">
-                        {club.description}
+                        {@html getText(club.description)}
                     </p>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2 text-gray-500">
