@@ -39,7 +39,7 @@
                         {club.name}
                     </h4>
                     <p class="text-gray-600 mb-4">
-                        {club.description}
+                        {club.description.length > 100 ? club.description.substring(0, 100).trim() + '...' : club.description}
                     </p>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2 text-gray-500">
