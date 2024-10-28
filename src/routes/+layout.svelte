@@ -2,18 +2,13 @@
     import "../app.css";
     import { Toaster } from "$lib/components/ui/sonner";
     import { ModeWatcher } from "mode-watcher";
-    import Menu from "lucide-svelte/icons/menu";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
-    import Sun from "lucide-svelte/icons/sun";
-    import Moon from "lucide-svelte/icons/moon";
+    import { LogOut, LogIn, CircleUser, Menu, Sun, Moon, LayoutDashboard, } from "lucide-svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button/index.js";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
-    import { CircleUser } from "lucide-svelte";
     import * as Popover from "$lib/components/ui/popover/index.js";
-    import LayoutDashboard from "lucide-svelte/icons/layout-dashboard";
-    import { LogOut, LogIn } from "lucide-svelte/icons";
 
     export let data;
     $: ({ session, supabase } = data);
@@ -105,8 +100,9 @@
                     {/if}
                     {#if data.user}
                         <Button
+                            variant="ghost"
                             on:click={logout}
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                            class="flex justify-start  gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                         >
                             <LogOut class="h-4 w-4" />
                             <span>Logout</span>
