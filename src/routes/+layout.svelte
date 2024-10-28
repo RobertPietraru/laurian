@@ -4,6 +4,7 @@
     import { ModeWatcher } from "mode-watcher";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
     import {
+        User,
         LogOut,
         LogIn,
         CircleUser,
@@ -86,31 +87,37 @@
         >
             Despre
         </a>
-        <Popover.Root>
-            <Popover.Trigger asChild let:builder>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    class="text-muted-foreground hover:text-foreground transition-colors"
-                    builders={[builder]}
-                >
-                    <CircleUser class="h-4 w-4" />
-                </Button>
-            </Popover.Trigger>
-            <Popover.Content class="w-48">
-                <div class="flex flex-col gap-2">
-                    {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+        {#if data.user}
+            <Popover.Root>
+                <Popover.Trigger asChild let:builder>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        class="text-muted-foreground hover:text-foreground transition-colors"
+                        builders={[builder]}
+                    >
+                        <CircleUser class="h-4 w-4" />
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Content class="w-48">
+                    <div class="flex flex-col gap-2">
+                        {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                            <a
+                                href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                                class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                            >
+                                <LayoutDashboard class="h-4 w-4" />
+                                <span>Dashboard</span>
+                            </a>
+                            <Separator />
+                        {/if}
                         <a
-                            href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                            href="/profile"
                             class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                         >
-                            <LayoutDashboard class="h-4 w-4" />
-                            <span>Dashboard</span>
+                            <User class="h-4 w-4" />
+                            Profil
                         </a>
-                    {/if}
-
-                    <Separator />
-                    {#if data.user}
                         <Button
                             variant="ghost"
                             on:click={logout}
@@ -119,18 +126,18 @@
                             <LogOut class="h-4 w-4" />
                             <span>Logout</span>
                         </Button>
-                    {:else}
-                        <a
-                            href="/login"
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                        >
-                            <LogIn class="h-4 w-4" />
-                            <span>Login</span>
-                        </a>
-                    {/if}
-                </div>
-            </Popover.Content>
-        </Popover.Root>
+                    </div>
+                </Popover.Content>
+            </Popover.Root>
+        {:else}
+            <a
+                href="/login"
+                class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+            >
+                <LogIn class="h-4 w-4" />
+                <span>Login</span>
+            </a>
+        {/if}
     </nav>
     <Sheet.Root>
         <Sheet.Trigger asChild let:builder>
