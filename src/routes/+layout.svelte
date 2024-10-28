@@ -2,18 +2,24 @@
     import "../app.css";
     import { Toaster } from "$lib/components/ui/sonner";
     import { ModeWatcher } from "mode-watcher";
-    import Menu from "lucide-svelte/icons/menu";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
-    import Sun from "lucide-svelte/icons/sun";
-    import Moon from "lucide-svelte/icons/moon";
+    import {
+        User,
+        LogOut,
+        LogIn,
+        CircleUser,
+        Menu,
+        Sun,
+        Moon,
+        LayoutDashboard,
+    } from "lucide-svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button/index.js";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
-    import { CircleUser } from "lucide-svelte";
+
+    import { Separator } from "$lib/components/ui/separator/index.js";
     import * as Popover from "$lib/components/ui/popover/index.js";
-    import LayoutDashboard from "lucide-svelte/icons/layout-dashboard";
-    import { LogOut, LogIn } from "lucide-svelte/icons";
 
     export let data;
     $: ({ session, supabase } = data);
@@ -81,48 +87,57 @@
         >
             Despre
         </a>
-        <Popover.Root>
-            <Popover.Trigger asChild let:builder>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    class="text-muted-foreground hover:text-foreground transition-colors"
-                    builders={[builder]}
-                >
-                    <CircleUser class="h-4 w-4" />
-                </Button>
-            </Popover.Trigger>
-            <Popover.Content class="w-48">
-                <div class="flex flex-col gap-2">
-                    {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+        {#if data.user}
+            <Popover.Root>
+                <Popover.Trigger asChild let:builder>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        class="text-muted-foreground hover:text-foreground transition-colors"
+                        builders={[builder]}
+                    >
+                        <CircleUser class="h-4 w-4" />
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Content class="w-48">
+                    <div class="flex flex-col gap-2">
+                        {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                            <a
+                                href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                                class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                            >
+                                <LayoutDashboard class="h-4 w-4" />
+                                <span>Dashboard</span>
+                            </a>
+                            <Separator />
+                        {/if}
                         <a
-                            href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                            href="/profile"
                             class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                         >
-                            <LayoutDashboard class="h-4 w-4" />
-                            <span>Dashboard</span>
+                            <User class="h-4 w-4" />
+                            Profil
                         </a>
-                    {/if}
-                    {#if data.user}
                         <Button
+                            variant="ghost"
                             on:click={logout}
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                            class="flex justify-start  gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                         >
                             <LogOut class="h-4 w-4" />
                             <span>Logout</span>
                         </Button>
-                    {:else}
-                        <a
-                            href="/login"
-                            class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-                        >
-                            <LogIn class="h-4 w-4" />
-                            <span>Login</span>
-                        </a>
-                    {/if}
-                </div>
-            </Popover.Content>
-        </Popover.Root>
+                    </div>
+                </Popover.Content>
+            </Popover.Root>
+        {:else}
+            <a
+                href="/login"
+                class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+            >
+                <LogIn class="h-4 w-4" />
+                <span>Login</span>
+            </a>
+        {/if}
     </nav>
     <Sheet.Root>
         <Sheet.Trigger asChild let:builder>
@@ -137,7 +152,7 @@
             </Button>
         </Sheet.Trigger>
         <Sheet.Content side="right">
-            <nav class="grid gap-6 text-lg font-medium">
+            <nav class="flex flex-col gap-6 font-medium h-full">
                 <a
                     href="/"
                     class="flex items-center gap-2 text-lg font-semibold"
@@ -161,20 +176,29 @@
                     Despre
                 </a>
 
-                {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                <Separator />
+                <div class="flex-grow"></div>
+                {#if data.user}
+                    {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                        <a
+                            href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                            class="text-muted-foreground hover:text-foreground"
+                        >
+                            Dashboard
+                        </a>
+                    {/if}
                     <a
-                        href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                        href="/profile"
                         class="text-muted-foreground hover:text-foreground"
                     >
-                        Dashboard
+                        Profil
                     </a>
-                {/if}
-                {#if data.user}
                     <Button
                         on:click={logout}
-                        variant="ghost"
-                        class="text-muted-foreground hover:text-foreground "
+                        variant="destructive"
+                        class="flex justify-start gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded "
                     >
+                        <LogOut class="h-4 w-4" />
                         Logout
                     </Button>
                 {/if}

@@ -69,7 +69,8 @@ Suntem deschiși contribuțiilor! Dacă doriți să contribuiți la acest proiec
 
 ## Typescript types generation
 
-npx supabase gen types --lang=typescript --project-id "$reference" --schema public > src/lib/types/database.types.ts
+```npx supabase gen types --lang=typescript --project-id "$reference" --schema public > src/lib/types/database.types.ts```
+
 
 ## Licență
 

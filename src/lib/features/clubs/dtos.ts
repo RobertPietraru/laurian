@@ -16,5 +16,6 @@ export interface CreateClubParams {
 }
 
 export type ClubDto = types.Tables<'clubs'>;
+export type AppUserDto = types.Tables<'users'>;
 export type ClubEditorDto = types.Tables<'club_editors'>;
 export type CreateClubDto = Omit<ClubDto, "created">;
