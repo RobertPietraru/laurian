@@ -40,7 +40,7 @@ const supabase: Handle = async ({ event, resolve }) => {
         return { session, user }
     }
     event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.SUPABASE_URL);
-    event.locals.authRepository = new AuthRepository(event.locals.supabase);
+    event.locals.authRepository = new AuthRepository(event.locals.supabase, env.SUPABASE_URL);
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
             return name === 'content-range' || name === 'x-supabase-api-version'

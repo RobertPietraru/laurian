@@ -1,11 +1,15 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { userRoles, type AppUser, type AppUserRole } from "./models";
+import { userFromJson, userRoles, type AppUser, type AppUserRole } from "./models";
 
 import { logger } from '$lib/stores/logger';
+import type { types } from "$lib/types";
+import type { AppUserDto } from "../clubs/dtos";
 
 export class AuthRepository {
-    constructor(private readonly supabase: SupabaseClient) {
+    constructor(private readonly supabase: SupabaseClient, private readonly supabaseUrl: string) {
         this.supabase = supabase;
+        this.supabaseUrl = supabaseUrl;
+
     }
 
     async signIn(email: string, password: string): Promise<"wrong_credentials" | "unknown_error" | null> {
@@ -44,8 +48,50 @@ export class AuthRepository {
             return null;
         }
         userData[0].role = role as AppUserRole;
-        const user = userData[0] as Partial<AppUser>;
-        return user as AppUser;
+        const user = userData[0] as AppUserDto;
+        return userFromJson(user, role, this.supabaseUrl);
+    }
+    async modifyProfile(params: {
+        name: string | undefined,
+        description: string | undefined,
+        image: File | undefined,
+    }): Promise<"unknown_error" | null> {
+        const user = await this.getUser();
+        if (!user) {
+            return "unknown_error";
+        }
+
+        var fileName: string | undefined = undefined;
+        if (params.image) {
+            const name = `${crypto.randomUUID()}_${params.image.name}`;
+            const { error: uploadError } = await this.supabase.storage
+                .from('laurianbucket')
+                .upload(`${user.id}/${name}`, params.image);
+
+            if (uploadError) {
+                logger.error("Error uploading file: ", uploadError);
+                return "unknown_error";
+            }
+            fileName = name;
+        }
+        const table: Partial<types.Tables<"users">> = {}
+        if (params.name) {
+            table.name = params.name;
+        }
+        if (params.description) {
+            table.description = params.description;
+        }
+        if (fileName) {
+            table.image = fileName;
+        }
+
+        const { error: updateError } = await this.supabase.from("users").update(table).eq('id', user.id);
+        if (updateError) {
+            logger.error("Error modifying profile: ", updateError);
+            return "unknown_error";
+        }
+
+        return null;
     }
     async signUp(email: string, password: string, name: string): Promise<"email_taken" | "unknown_error" | null> {
         const { error } = await this.supabase.auth.signUp({
@@ -88,8 +134,8 @@ export class AuthRepository {
 
             logger.error("Error creating user: ", insertUserError);
             try {
-                
-            await this.supabase.auth.signOut();
+
+                await this.supabase.auth.signOut();
             } catch (error) {
                 logger.error("Error signing out: ", error);
                 return "unknown_error";
