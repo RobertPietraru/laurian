@@ -1,8 +1,9 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
-    import SvelteMarkdown from 'svelte-markdown';
+    import SvelteMarkdown from "svelte-markdown";
     import type { PageData } from "./$types";
+    import { marked } from "marked";
 
     export let data: PageData;
 
@@ -12,13 +13,15 @@
 <main class="container mx-auto px-4 py-8">
     <h1 class="text-4xl font-bold mb-12">{club.name}</h1>
 
-    <section class="mb-16">
-            <SvelteMarkdown source={club.description} />
+    <section class="mb-16 markdown-content">
+        {@html marked(club.description)}
     </section>
 
     <section>
         <h2 class="text-3xl font-semibold mb-6">Galerie</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
             {#each club.files as image, index}
                 <div
                     class="relative overflow-hidden rounded-xl group"
@@ -32,8 +35,7 @@
                     />
                     <div
                         class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center"
-                    >
-                    </div>
+                    ></div>
                 </div>
             {/each}
         </div>
