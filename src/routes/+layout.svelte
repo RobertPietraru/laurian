@@ -3,11 +3,21 @@
     import { Toaster } from "$lib/components/ui/sonner";
     import { ModeWatcher } from "mode-watcher";
     import * as Sheet from "$lib/components/ui/sheet/index.js";
-    import { LogOut, LogIn, CircleUser, Menu, Sun, Moon, LayoutDashboard, } from "lucide-svelte/icons";
+    import {
+        LogOut,
+        LogIn,
+        CircleUser,
+        Menu,
+        Sun,
+        Moon,
+        LayoutDashboard,
+    } from "lucide-svelte/icons";
     import { toggleMode } from "mode-watcher";
     import { Button } from "$lib/components/ui/button/index.js";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
+
+    import { Separator } from "$lib/components/ui/separator/index.js";
     import * as Popover from "$lib/components/ui/popover/index.js";
 
     export let data;
@@ -98,6 +108,8 @@
                             <span>Dashboard</span>
                         </a>
                     {/if}
+
+                    <Separator />
                     {#if data.user}
                         <Button
                             variant="ghost"
@@ -133,7 +145,7 @@
             </Button>
         </Sheet.Trigger>
         <Sheet.Content side="right">
-            <nav class="grid gap-6 text-lg font-medium">
+            <nav class="flex flex-col gap-6 font-medium h-full">
                 <a
                     href="/"
                     class="flex items-center gap-2 text-lg font-semibold"
@@ -157,20 +169,29 @@
                     Despre
                 </a>
 
-                {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                <Separator />
+                <div class="flex-grow"></div>
+                {#if data.user}
+                    {#if data.user?.role === "moderator" || data.user?.role === "admin"}
+                        <a
+                            href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                            class="text-muted-foreground hover:text-foreground"
+                        >
+                            Dashboard
+                        </a>
+                    {/if}
                     <a
-                        href={`/${data.user?.role === "moderator" ? "moderator" : "admin"}/dashboard`}
+                        href="/profile"
                         class="text-muted-foreground hover:text-foreground"
                     >
-                        Dashboard
+                        Profil
                     </a>
-                {/if}
-                {#if data.user}
                     <Button
                         on:click={logout}
-                        variant="ghost"
-                        class="text-muted-foreground hover:text-foreground "
+                        variant="destructive"
+                        class="flex justify-start gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded "
                     >
+                        <LogOut class="h-4 w-4" />
                         Logout
                     </Button>
                 {/if}
