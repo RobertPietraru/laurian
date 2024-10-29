@@ -87,6 +87,12 @@
         >
             Despre
         </a>
+        <a
+            href="/minigames"
+            class="text-muted-foreground hover:text-foreground transition-colors"
+        >
+            Minigames
+        </a>
         {#if data.user}
             <Popover.Root>
                 <Popover.Trigger asChild let:builder>
@@ -229,6 +235,10 @@
                     </li>
                     <li class="mb-4">
                         <a href="/discover" class="hover:underline">Cluburi</a>
+                    </li>
+
+                    <li class="mb-4">
+                        <a href="/minigames" class="hover:underline">Minigames</a>
                     </li>
                 </ul>
             </div>
