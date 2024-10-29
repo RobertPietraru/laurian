@@ -61,7 +61,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 
     if (event.locals.user?.role === 'admin') {
-        event.locals.adminRepository = new AdminRepository(event.locals.supabase);
+        event.locals.adminRepository = new AdminRepository(event.locals.supabase, env.SUPABASE_URL);
     } else {
         event.locals.adminRepository = null;
     }

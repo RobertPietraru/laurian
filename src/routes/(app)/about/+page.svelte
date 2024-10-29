@@ -48,7 +48,7 @@
                                 {member.name}
                             </h3>
                             <p class="text-center text-gray-600">
-                                {member.role}
+                                {member.teamRole}
                             </p>
                         </Card.Content>
                     </Card.Root>

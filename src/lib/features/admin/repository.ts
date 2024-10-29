@@ -1,12 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { logger } from "$lib/stores/logger";
-import { type AppUser } from "$lib/features/auth/models";
+import { userFromJson, type AppUser } from "$lib/features/auth/models";
 import type { ClubEditorDto } from "../clubs/dtos";
 import type { AdminClub } from "./models";
 import type { Club } from "../clubs/models";
 
 export class AdminRepository {
-    constructor(private readonly supabase: SupabaseClient) {
+    constructor(private readonly supabase: SupabaseClient, private readonly supabaseURL: string) {
         this.supabase = supabase;
     }
     async getUserById(userId: string): Promise<AppUser | null> {
@@ -111,6 +111,19 @@ export class AdminRepository {
             return null;
         }
         return { users: data.map((user) => ({ ...user, role: user.roles.name })) as AppUser[], index: (page - 1) * pageSize, lastIndex: page * pageSize + data.length, total: data.length, usersLeft: 0 };
+    }
+
+    async getAllModerators(): Promise<AppUser[] | null> {
+        const { data, error } = await this.supabase
+            .from('users')
+            .select('*, roles!inner(*)')
+            .not('team_role', 'is', null);
+
+        if (error) {
+            logger.error("Error getting moderators: ", error);
+            return null;
+        }
+        return data.map((user) => userFromJson(user, user.roles.name, this.supabaseURL));
     }
 
 
