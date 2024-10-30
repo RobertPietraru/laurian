@@ -35,6 +35,7 @@
                         <Card.Header>
                             <Avatar.Root class="w-24 h-24 mx-auto">
                                 <Avatar.Image
+                                    class="object-cover"
                                     src={member.image}
                                     alt={member.name}
                                 />
