@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { mode } from "mode-watcher";
+</script>
+
 <section
   class="container grid lg:grid-cols-2 place-items-center py-20 md:py-32 gap-10"
   style="height: calc(100vh - 4rem);"
@@ -12,7 +16,11 @@
         >” Botoşani
       </h1>
     </main>
-    <h2 class="text-4xl font-semibold text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-left">Descoperă cluburile și activitățile din colegiul nostru.</h2>
+    <h2
+      class="text-4xl font-semibold text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-left"
+    >
+      Descoperă cluburile și activitățile din colegiul nostru.
+    </h2>
     <div class="space-y-4 md:space-y-0 md:space-x-4">
       <a
         href="/discover"
@@ -41,10 +49,19 @@
     </div>
   </div>
 
-  <img
-    src="/laurian.png"
-    alt="Colegiul Naţional „A. T. Laurian” Botoşani"
-    class="absolute bottom-0 right-0 object-cover -z-10 opacity-20 dark:opacity-10  dark:md:opacity-50"
-    style="height: calc(100vh - 4rem);"
-  />
+  {#if $mode === "dark"}
+    <img
+      src="/laurian.png"
+      alt="Colegiul Naţional „A. T. Laurian” Botoşani"
+      class="absolute bottom-0 right-0 object-cover -z-10 opacity-20 dark:opacity-10 dark:md:opacity-50"
+      style="height: calc(100vh - 4rem);"
+    />
+  {:else}
+    <img
+      src="/laurian_light.png"
+      alt="Colegiul Naţional „A. T. Laurian” Botoşani"
+      class="absolute bottom-0 right-0 object-cover -z-10 opacity-20 md:opacity-50"
+      style="height: calc(100vh - 4rem);"
+    />
+  {/if}
 </section>
