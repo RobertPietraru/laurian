@@ -1,5 +1,5 @@
 export const load = async ({ locals }) => {
-    const team = await locals.adminRepository?.getAllModerators();
+    const team = await locals.authRepository?.getAllModerators();
 
     const gallery = [
         "https://picsum.photos/800/600?random=1",

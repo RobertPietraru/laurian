@@ -113,18 +113,7 @@ export class AdminRepository {
         return { users: data.map((user) => ({ ...user, role: user.roles.name })) as AppUser[], index: (page - 1) * pageSize, lastIndex: page * pageSize + data.length, total: data.length, usersLeft: 0 };
     }
 
-    async getAllModerators(): Promise<AppUser[] | null> {
-        const { data, error } = await this.supabase
-            .from('users')
-            .select('*, roles!inner(*)')
-            .not('team_role', 'is', null);
 
-        if (error) {
-            logger.error("Error getting moderators: ", error);
-            return null;
-        }
-        return data.map((user) => userFromJson(user, user.roles.name, this.supabaseURL));
-    }
 
 
 }

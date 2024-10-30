@@ -146,4 +146,16 @@ export class AuthRepository {
 
         return null;
     }
+    async getAllModerators(): Promise<AppUser[] | null> {
+        const { data, error } = await this.supabase
+            .from('users')
+            .select('*, roles!inner(*)')
+            .not('team_role', 'is', null);
+
+        if (error) {
+            logger.error("Error getting moderators: ", error);
+            return null;
+        }
+        return data.map((user) => userFromJson(user, user.roles.name, this.supabaseUrl));
+    }
 }
