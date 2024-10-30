@@ -207,6 +207,14 @@
                         <LogOut class="h-4 w-4" />
                         Logout
                     </Button>
+                {:else}
+                    <a
+                        href="/login"
+                        class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                    >
+                        <LogIn class="h-4 w-4" />
+                        <span>Login</span>
+                    </a>
                 {/if}
             </nav>
         </Sheet.Content>
@@ -238,7 +246,9 @@
                     </li>
 
                     <li class="mb-4">
-                        <a href="/minigames" class="hover:underline">Minigames</a>
+                        <a href="/minigames" class="hover:underline"
+                            >Minigames</a
+                        >
                     </li>
                 </ul>
             </div>
