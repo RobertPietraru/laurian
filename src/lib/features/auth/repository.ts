@@ -21,7 +21,7 @@ export class AuthRepository {
             if (error.status === 400) {
                 return "wrong_credentials";
             }
-            logger.error("Error signing in: ", error);
+            logger.error({error}, "Error signing in");
             return "unknown_error";
         }
         return null;
@@ -31,20 +31,21 @@ export class AuthRepository {
 
         if (error || !data.user) {
             if (error) {
-                logger.error("Error getting user 1: ", error);
+                logger.error({error}, "Error getting user 1");
             }
             return null;
         }
         const authUser = data.user;
         const { data: userData, error: userError } = await this.supabase.from("users").select('*, roles!inner(*)').eq("auth", authUser.id);
-
+        
         if (userError || userData.length == 0 || !userData[0].roles) {
-            logger.error("Error getting user: ", userError);
+            console.log(userError);
+            logger.error({userError}, "Error getting user");
             return null;
         }
         const role = userData[0]?.roles?.name;
         if (!userRoles.includes(role)) {
-            logger.error("User role not found: ", role);
+            logger.error({role}, "User role not found");
             return null;
         }
         userData[0].role = role as AppUserRole;
@@ -69,7 +70,7 @@ export class AuthRepository {
                 .upload(`${user.id}/${name}`, params.image);
 
             if (uploadError) {
-                logger.error("Error uploading file: ", uploadError);
+                logger.error({uploadError}, "Error uploading file");
                 return "unknown_error";
             }
             fileName = name;
@@ -87,7 +88,7 @@ export class AuthRepository {
 
         const { error: updateError } = await this.supabase.from("users").update(table).eq('id', user.id);
         if (updateError) {
-            logger.error("Error modifying profile: ", updateError);
+            logger.error({updateError}, "Error modifying profile");
             return "unknown_error";
         }
 
@@ -108,17 +109,17 @@ export class AuthRepository {
             } else if (error.status === 422) {
                 return "email_taken";
             }
-            logger.error("Error signing up: ", error);
+            logger.error({error}, "Error signing up");
             return "unknown_error";
         }
 
         const { data: userData, error: userError } = await this.supabase.auth.getUser();
         if (!userData) {
-            logger.error("SIGNUP ERROR getting user");
+            logger.error({userData}, "SIGNUP ERROR getting user");
             return "unknown_error";
         }
         if (userError) {
-            logger.error("SIGNUP ERROR getting user", userError);
+            logger.error({userError}, "SIGNUP ERROR getting user");
             return "unknown_error";
         }
 
@@ -132,12 +133,12 @@ export class AuthRepository {
         if (insertUserError) {
             /// logout
 
-            logger.error("Error creating user: ", insertUserError);
+            logger.error({insertUserError}, "Error creating user");
             try {
 
                 await this.supabase.auth.signOut();
             } catch (error) {
-                logger.error("Error signing out: ", error);
+                logger.error({error}, "Error signing out");
                 return "unknown_error";
             }
 
@@ -153,7 +154,7 @@ export class AuthRepository {
             .not('team_role', 'is', null);
 
         if (error) {
-            logger.error("Error getting moderators: ", error);
+            logger.error({error}, "Error getting moderators");
             return null;
         }
         return data.map((user) => userFromJson(user, user.roles.name, this.supabaseUrl));

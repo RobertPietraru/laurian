@@ -8,7 +8,7 @@ import { logger } from '$lib/stores/logger';
 import { AdminRepository } from '$lib/features/admin/repository'
 
 const supabase: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    event.locals.supabase = createServerClient(env.f_PUBLIC_SUPABASE_URL, env.f_PUBLIC_SUPABASE_ANON_KEY, {
         cookies: {
             getAll: () => event.cookies.getAll(),
             setAll: (cookiesToSet) => {
@@ -39,8 +39,8 @@ const supabase: Handle = async ({ event, resolve }) => {
 
         return { session, user }
     }
-    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.SUPABASE_URL);
-    event.locals.authRepository = new AuthRepository(event.locals.supabase, env.SUPABASE_URL);
+    event.locals.clubRepository = new ClubRepository(event.locals.supabase, env.f_SUPABASE_URL);
+    event.locals.authRepository = new AuthRepository(event.locals.supabase, env.f_SUPABASE_URL);
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
             return name === 'content-range' || name === 'x-supabase-api-version'
@@ -61,7 +61,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 
     if (event.locals.user?.role === 'admin') {
-        event.locals.adminRepository = new AdminRepository(event.locals.supabase, env.SUPABASE_URL);
+        event.locals.adminRepository = new AdminRepository(event.locals.supabase, env.f_SUPABASE_URL);
     } else {
         event.locals.adminRepository = null;
     }

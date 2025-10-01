@@ -12,7 +12,7 @@ export class AdminRepository {
     async getUserById(userId: string): Promise<AppUser | null> {
         const { data, error } = await this.supabase.from('users').select('*, roles!inner(*)').eq('id', userId).single();
         if (error) {
-            logger.error("Error getting user: ", error);
+            logger.error({error}, "Error getting user by id");
             return null;
         }
         return { ...data, role: data.roles.name } as AppUser;
@@ -20,7 +20,7 @@ export class AdminRepository {
     async getAllClubs(): Promise<AdminClub[] | null> {
         const { data, error } = await this.supabase.from('clubs').select('id, name');
         if (error) {
-            logger.error("Error getting clubs: ", error);
+            logger.error({error}, "Error getting clubs");
             return null;
         }
         return data;
@@ -29,7 +29,7 @@ export class AdminRepository {
         const { data, error } = await this.supabase.from('club_editors').select('club').eq('user', editorId);
 
         if (error) {
-            logger.error("Error getting clubs: ", error);
+            logger.error({error}, "Error getting clubs with editor");
             return null;
         }
         return data.map((club) => club.club);
@@ -43,7 +43,7 @@ export class AdminRepository {
         try {
             parsedUserId = parseInt(userId);
         } catch (error) {
-            logger.error("Error parsing user ID: ", error);
+            logger.error({error}, "Error parsing user ID");
             return 'user_not_found';
         }
         const { error } = await this.supabase.from('club_editors').upsert(
@@ -54,7 +54,7 @@ export class AdminRepository {
             })),
         );
         if (error) {
-            logger.error("Error assigning editor to clubs: ", error);
+            logger.error({error}, "Error assigning editor to clubs");
             return 'unknown';
         }
         return null;
@@ -64,12 +64,12 @@ export class AdminRepository {
         try {
             parsedUserId = parseInt(userId);
         } catch (error) {
-            logger.error("Error parsing user ID: ", error);
+            logger.error({error}, "Error parsing user ID");
             return 'user_not_found';
         }
         const { error } = await this.supabase.from('club_editors').delete().in('club', clubIds).eq('user', parsedUserId);
         if (error) {
-            logger.error("Error removing editor from clubs: ", error);
+            logger.error({error}, "Error removing editor from clubs");
             return 'unknown';
         }
         return null;
@@ -78,7 +78,7 @@ export class AdminRepository {
     async makeModerator(userId: string): Promise<'unknown' | null> {
         const { error } = await this.supabase.from('users').update({ role: 3 }).eq('id', userId);
         if (error) {
-            logger.error("Error making moderator: ", error);
+            logger.error({error}, "Error making moderator");
             return 'unknown';
         }
         return null;
@@ -87,12 +87,12 @@ export class AdminRepository {
     async removeModerator(userId: string): Promise<'unknown' | null> {
         const { error } = await this.supabase.from('users').update({ role: 2 }).eq('id', userId);
         if (error) {
-            logger.error("Error removing moderator: ", error);
+            logger.error({error}, "Error removing moderator");
             return 'unknown';
         }
         const { error: error2 } = await this.supabase.from('club_editors').delete().eq('user', userId);
         if (error2) {
-            logger.error("Error removing editor from clubs: ", error2);
+            logger.error({error2}, "Error removing editor from clubs");
             return 'unknown';
         }
         return null;
@@ -107,7 +107,7 @@ export class AdminRepository {
         const { data, error } = await this.supabase.from('users').select('*, roles!inner(*)').range((page - 1) * pageSize, page * pageSize);
 
         if (error) {
-            logger.error("Error getting users: ", error);
+            logger.error({error}, "Error getting users");
             return null;
         }
         return { users: data.map((user) => ({ ...user, role: user.roles.name })) as AppUser[], index: (page - 1) * pageSize, lastIndex: page * pageSize + data.length, total: data.length, usersLeft: 0 };

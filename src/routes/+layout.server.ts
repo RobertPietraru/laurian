@@ -7,8 +7,8 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   return {
     user,
     cookies: cookies.getAll(),
-    publicSupabaseURL: env.NEXT_PUBLIC_SUPABASE_URL,
-    publicSupabaseAnonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    publicSupabaseURL: env.f_PUBLIC_SUPABASE_URL,
+    publicSupabaseAnonKey: env.f_PUBLIC_SUPABASE_ANON_KEY
 
   }
 }
